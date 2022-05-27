@@ -1,0 +1,30 @@
+<table>
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th><b>Tanggal</b></th>
+            <th><b>Nomor Aset</b></th>
+            <th><b>Kategori</b></th>
+            <th><b>Aset</b></th>
+            <th><b>Serie</b></th>
+            <th><b>NIK</b></th>
+            <th><b>User</b></th>
+            <th><b>Jabatan</b></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($final as $key => $d)
+            <tr>
+                <td>{{$key+1}}</td>
+                <td>{{$d['tanggal']}}</td>
+                <td>{{$d['kode_item']}}</td>
+                <td>{{$d['kategori']}}</td>
+                <td>{{$d['nama_item']}}</td>
+                <td>{{$d['serie_item']}}</td>
+                <td>{{$d['nip']}}</td>
+                <td>{{$d['nama']}}</td>
+                <td>{{$d['jabatan']}}</td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
