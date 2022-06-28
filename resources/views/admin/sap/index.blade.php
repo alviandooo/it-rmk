@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2>Data SAP Item</h2>
-                    <p></p>
+                    <p style="margin-top: -10px;">{{Breadcrumbs::render('sap-item')}}</p>
                 </div>
             </div>
         </div>

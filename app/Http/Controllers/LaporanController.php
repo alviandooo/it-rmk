@@ -139,7 +139,7 @@ class LaporanController extends Controller
             $data = $dataf;
         }
         if($jenis_transaksi != '5'){
-            $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+            $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
             $datakaryawan = json_decode($response);
             $result=[];
             $final = array();
@@ -249,7 +249,7 @@ class LaporanController extends Controller
         }
 
         if($jenis_transaksi != '5'){
-            $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+            $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
             $datakaryawan = json_decode($response);
             $result=[];
             $final = array();

@@ -144,6 +144,18 @@ Breadcrumbs::for('area-lokasi-device', function (BreadcrumbTrail $trail) {
     $trail->push('Data Area & Lokasi Device', route('arealokasi.index'));
 });
 
+//Dashboard > SAP Item
+Breadcrumbs::for('sap-item', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Data SAP Item Device', route('sap.index'));
+});
+
+//Dashboard > Site
+Breadcrumbs::for('site', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Data Site', route('site.index'));
+});
+
 //Kategori
 //Dashboard > Kategori Item
 Breadcrumbs::for('kategori', function (BreadcrumbTrail $trail) {

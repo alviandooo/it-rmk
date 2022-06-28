@@ -10,8 +10,14 @@
     <link rel="stylesheet" href="{{asset('assets/bootstrap3/css/bootstrap.css')}}">
 
     <style>
+        @page{
+            margin-top: 15px;
+            margin-right: 15px;
+            margin-left: 25px;
+        }
         body {
             font-family: Arial, Helvetica, sans-serif;
+            margin:0px;
         }
         /* .page-break {
             page-break-after: always;
@@ -63,7 +69,7 @@
                     <td  style="border:1px solid black; text-align:center;"><b>No</b></td>
                     <td  style="border:1px solid black; text-align:center;"><b>Part Name</b></td>
                     <td  style="border:1px solid black; text-align:center;"><b>Part Number</b></td>
-                    <td  style="border:1px solid black; text-align:center; width:3%"><b>Item Number SAP</b></td>
+                    <td  style="border:1px solid black; text-align:center;word-wrap: break-word;"><b>Item Number SAP</b></td>
                     {{-- <td  style="border:1px solid black"><b>Component</b></td> --}}
                     <td  style="border:1px solid black; text-align:center;"><b>QTY Request</b></td>
                     {{-- <td  style="border:1px solid black">Stock On Hand</b></td> --}}
@@ -73,15 +79,15 @@
                 </tr>
                 @foreach ($item_permintaan as $key => $d)
                     <tr>
-                        <td  style="border:1px solid black; width:2%; text-align:center;">{{$key+1}}</td>
-                        <td  style="border:1px solid black; width:5%; padding:5px;">{{strtoupper($d->part_name)}}</td>
-                        <td  style="border:1px solid black; width:5%; padding:5px;">{{strtoupper($d->part_number)}}</td>
-                        <td  style="border:1px solid black; width:6%;text-align:center;">{{$d->sap_item_number}}</td>
+                        <td  style="border:1px solid black; width:1%; text-align:center;">{{$key+1}}</td>
+                        <td  style="border:1px solid black; width:6%; padding:5px;">{{strtoupper($d->part_name)}}</td>
+                        <td  style="border:1px solid black; width:6%; padding:5px;">{{strtoupper($d->part_number)}}</td>
+                        <td  style="border:1px solid black; width:2%;text-align:center;">{{$d->sap_item_number}}</td>
                         {{-- <td  style="border:1px solid black; width:4%;">{{$d->component}}</td> --}}
-                        <td  style="border:1px solid black; width:3%;text-align:center;">{{$d->qty_request}}</td>
-                        <td  style="border:1px solid black; width:3%;text-align:center;">{{$d->qty_request_mr}}</td>
-                        <td  style="border:1px solid black; width:3%;text-align:center;">{{$d->satuan->satuan}}</td>
-                        <td  style="border:1px solid black; width:6%; word-wrap: break-word; text-align:left; padding:5px">{{strtoupper($d->remarks)}}</td>
+                        <td  style="border:1px solid black; width:1.5%;text-align:center;">{{$d->qty_request}}</td>
+                        <td  style="border:1px solid black; width:1.5%;text-align:center;">{{$d->qty_request_mr}}</td>
+                        <td  style="border:1px solid black; width:2%;text-align:center;">{{$d->satuan->satuan}}</td>
+                        <td  style="border:1px solid black; width:5%; word-wrap: break-word; text-align:left; padding:5px">{{strtoupper($d->remarks)}}</td>
                     </tr>
                 @endforeach
             </table>

@@ -38,7 +38,7 @@
                 </div>
                 <div class="form-group mt-2">
                   <label for="">Deskripsi :</label>
-                  <textarea name="" class="form-control" id="deskripsi_item" cols="30" rows="3"></textarea>
+                  <textarea name="" class="form-control" id="deskripsi_item" cols="30" rows="3">-</textarea>
                 </div>
             </div>
         </div>

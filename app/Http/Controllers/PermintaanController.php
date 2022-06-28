@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ItemPermintaanExport;
 use App\Exports\MaterialRequestExcel;
 use App\Models\Approval;
 use App\Models\ItemPermintaan;
@@ -21,14 +22,14 @@ class PermintaanController extends Controller
 {
     public function index()
     {
-        $response1 = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/departemen/25');
+        $response1 = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/departemen/25');
         $datakaryawanit = json_decode($response1);
         return view('admin.permintaan.index', compact(['datakaryawanit']) );
     }
     
     public function indexApprove()
     {
-        $response1 = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/departemen/25');
+        $response1 = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/departemen/25');
         $datakaryawanit = json_decode($response1);
         return view('admin.permintaan.approve.index', compact(['datakaryawanit']));
     }
@@ -71,7 +72,7 @@ class PermintaanController extends Controller
 
     public function create()
     {
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
 
         $item = Item::all();
@@ -228,6 +229,14 @@ class PermintaanController extends Controller
         }
     }
 
+    public function excelItem($ro_no)
+    {
+        $ro = str_replace('-','/',$ro_no);
+        $dataip = ItemPermintaan::where('ro_no',$ro)->get();
+        return Excel::download(new ItemPermintaanExport($dataip), 'Item-Permintaan-'.$ro_no.'.xlsx');
+
+    }
+
     public function pdf($id)
     {
         $data = Permintaan::with(['approval'])->find($id);
@@ -237,7 +246,7 @@ class PermintaanController extends Controller
         $approve = array();
 
         foreach ($data->approval as $key => $value) {
-            $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$value->nip);
+            $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$value->nip);
             $dk = json_decode($response)[0];
             
             $image = QrCode::format('png')
@@ -248,8 +257,6 @@ class PermintaanController extends Controller
             
             array_push($approve, ['nip'=>$dk->nip, 'nama'=>$dk->nama, 'jabatan'=>$dk->jabatan->jabatan, 'qrcode'=>$qrcode]);
         }
-
-        
 
         $pdf = PDF::loadView('admin.permintaan.export.pdf', compact(['data','item_permintaan','approve']))->setPaper('a4', 'potrait')->setWarnings(false);
         return $pdf->stream();

@@ -25,9 +25,9 @@ class ItemMasukController extends Controller
         // $item = Item::where('status_item',2)->get();
         $item1 = Item::where('status_item',1)->get();
         $itemedit = Item::all();
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
-        $response1 = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/departemen/25');
+        $response1 = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/departemen/25');
         $datakaryawanit = json_decode($response1);
         return view('admin.inventaris.masuk.index', compact(['datakaryawanit','item','item1','datakaryawan', 'itemedit','itemconsumable',]));
     }
@@ -41,7 +41,7 @@ class ItemMasukController extends Controller
     public function getItemKeluar(Request $r)
     {
         $data = ItemKeluar::where('kode_item',$r->kode)->orderBy('updated_at','desc')->first();
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$data->nip);
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$data->nip);
         $data = json_decode($response)[0];
         return response()->json($data);
     }
@@ -59,11 +59,11 @@ class ItemMasukController extends Controller
         ])->where('type','2')->orderBy('tanggal', 'desc')->get();
 
         // $client = new \GuzzleHttp\Client();
-        // $response = $client->request('GET', 'http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        // $response = $client->request('GET', 'http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         // $data = $response->getBody();
         // dd($data);
 
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
 
         $datakaryawan = json_decode($response);
         $result=[];
@@ -229,11 +229,11 @@ class ItemMasukController extends Controller
         $tanggalnow = TanggalIndo::tanggal_indo($date->format('Y-m-d'));
         $waktu = $date->format('H:i:s');
 
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$request->nip_it);
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$request->nip_it);
         $datakaryawan = json_decode($response)[0];
         $data = ItemMasuk::with(['item', 'item.kategori'])->find($request->id);
 
-        $penerima = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$data->nip);
+        $penerima = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$data->nip);
         $datapenerima = json_decode($penerima)[0];
 
         $tanggal = TanggalIndo::tanggal_indo($data->tanggal);

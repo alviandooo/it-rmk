@@ -17,7 +17,7 @@ class KerusakanController extends Controller
     {
         $item = Item::all();
         $sparepart = Item::whereIn('kategori_id',['6'])->where('jumlah','!=','0')->get();
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         return view('admin.inventaris.kerusakan.index',compact(['item','datakaryawan','sparepart']));
     }
@@ -34,7 +34,7 @@ class KerusakanController extends Controller
         }
         ])->orderBy('tanggal', 'desc')->get();
 
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
 
         $datakaryawan = json_decode($response);
         $result=[];
@@ -167,7 +167,7 @@ class KerusakanController extends Controller
         }
         ])->where('id',$id)->get();
 
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
 
         $datakaryawan = json_decode($response);
         $result=[];

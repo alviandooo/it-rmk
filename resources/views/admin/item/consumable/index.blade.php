@@ -20,7 +20,18 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <button class="btn btn-sm btn-primary" style="margin-bottom: 15px" id="btn-tambah-item">Tambah</button>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <button class="btn btn-primary" style="margin-bottom: 15px" id="btn-tambah-item">Tambah</button>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="" class="single-select" id="status-item">
+                                    <option value="0">Semua</option>
+                                    <option value="1">Ready</option>
+                                    <option value="2">Kosong</option>
+                                </select>
+                            </div>
+                        </div>
                         {{-- <button class="btn btn-sm btn-primary" style="margin-bottom: 15px" id="btn-tambah-item">Tambah</button> --}}
                         <table id="dtitem" class="table table-stripped table-hover" style="background-color: #fff; border-radius:5px; width:100%">
                             <thead>
@@ -60,7 +71,7 @@
                 "processing": true,
                 "serverSide": true,
                 "order": [[ 7, "desc" ]],
-                "ajax": "{{route('item.dataconsumable')}}",
+                "ajax": "{{route('item.dataconsumable',0)}}",
                 "columns": [
                     {data:'id', name:"id", visible:false},
                     {data:'kode_item', name:"kode_item"},
@@ -95,6 +106,11 @@
                     }},
                 ]
             });  
+
+            $('#status-item').change(function () {
+                var url = "{{url('/admin/item/consumable/data')}}"+"/"+this.value
+                dti.ajax.url(url).load();
+            })
 
             $('#select_jenis_item').change(function () {
                 if($('#select_jenis_item').val() == '2'){

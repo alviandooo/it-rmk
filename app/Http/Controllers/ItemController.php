@@ -76,7 +76,7 @@ class ItemController extends Controller
                 $temp['jumlah'] = $v['jumlah'];
     
                 if($v['nip'] != null){
-                    $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$v['nip']);
+                    $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$v['nip']);
                     $datakaryawan = json_decode($response)[0];
                     $temp['nip'] = $datakaryawan->nip;
                     $temp['user'] = $datakaryawan->nama;
@@ -143,7 +143,7 @@ class ItemController extends Controller
                 $temp['jumlah'] = $v['jumlah'];
     
                 if($v['nip'] != null){
-                    $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$v['nip']);
+                    $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$v['nip']);
                     $datakaryawan = json_decode($response)[0];
                     $temp['nip'] = $datakaryawan->nip;
                     $temp['user'] = $datakaryawan->nama;
@@ -187,7 +187,7 @@ class ItemController extends Controller
             $temp['jumlah'] = $v['jumlah'];
 
             if($v['nip'] != null){
-                $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$v['nip']);
+                $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$v['nip']);
                 $datakaryawan = json_decode($response)[0];
                 $temp['nip'] = $datakaryawan->nip;
                 $temp['user'] = $datakaryawan->nama;
@@ -362,6 +362,8 @@ class ItemController extends Controller
             $kode_item = $item->kode_item;
             
             ItemMasuk::where('kode_item', $kode_item)->delete();
+            ItemKeluar::where('kode_item', $kode_item)->delete();
+            
             $item->delete();
 
             return response()->json(['text'=>'Item berhasil dihapus!', 'status'=>200]);
@@ -444,9 +446,15 @@ class ItemController extends Controller
         return view('admin.item.consumable.index', compact(['satuan','kategori','itemconsumable']));
     }
 
-    public function dataconsumable()
+    public function dataconsumable($status)
     {
-        $data = Item::with(['kategori','satuan'])->where('kategori_id',6)->orderBy('created_at', 'desc')->get();
+        if($status == 1){
+            $data = Item::with(['kategori','satuan'])->where('kategori_id',6)->where('status_item', 1)->where('jumlah', '!=', 0)->orderBy('created_at', 'desc')->get();
+        }else if($status == 2){
+            $data = Item::with(['kategori','satuan'])->where('kategori_id',6)->where('status_item', 1)->where('jumlah', '=', 0)->orderBy('created_at', 'desc')->get();
+        }else{
+            $data = Item::with(['kategori','satuan'])->where('kategori_id',6)->orderBy('created_at', 'desc')->get();
+        }
         return datatables()->of($data)->make(true);
     }
 
@@ -454,7 +462,7 @@ class ItemController extends Controller
     public function exportnd($jenis_export)
     {
         $data = Item::with(['kategori','network_device','network_device.lokasi_network_device','network_device.lokasi_network_device.area_lokasi_network_device'])->where('kategori_id', '4')->get();
-        // $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        // $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         // $datakaryawan = json_decode($response)->data;
         $final = array();
         $temp = [];
@@ -500,7 +508,7 @@ class ItemController extends Controller
     public function exportitembykategori($kategori_id, $jenis_export)
     {
         $data = Item::with(['kategori'])->where('kategori_id', $kategori_id)->get();
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         $final = array();
         $temp = [];

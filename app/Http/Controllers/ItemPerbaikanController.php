@@ -14,7 +14,7 @@ class ItemPerbaikanController extends Controller
 {
     public function index()
     {
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         $item = Item::whereIn('status_fisik', ['1','2','3'])->get();
         return view('admin.inventaris.perbaikan.index', compact(['item','datakaryawan']));
@@ -31,7 +31,7 @@ class ItemPerbaikanController extends Controller
             $query->select('*');
         }])->orderBy('tanggal_perbaikan', 'desc')->get();
 
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         
         $datakaryawan = json_decode($response);
         $result=[];

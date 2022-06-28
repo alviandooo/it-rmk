@@ -37,7 +37,10 @@
                         </li>
                     </ul>
                 </li> --}}
-                
+                @if (Auth::user()->nip == '88888888')
+                    <li> <a href="{{ route('site.index') }}"><i class="bx bx-right-arrow-alt"></i>Site</a>
+                @endif
+                </li>
                 <li> <a href="{{ route('kategori.index') }}"><i class="bx bx-right-arrow-alt"></i>Kategori</a>
                 </li>
                 <li> <a href="{{ route('satuan.index') }}"><i class="bx bx-right-arrow-alt"></i>Unit of Material</a>
@@ -57,7 +60,7 @@
                 <div class="menu-title">Transaksi</div>
             </a>
             <ul>
-                <li> <a href="{{ route('item.index') }}"><i class="bx bx-right-arrow-alt"></i>Item</a>
+                <li> <a href="{{ route('item.index') }}"><i class="bx bx-right-arrow-alt"></i>Item Master</a>
                 </li>
                 <li> <a href="{{ route('networkdevice.index') }}"><i class="bx bx-right-arrow-alt"></i>Network Device</a>
                 </li>

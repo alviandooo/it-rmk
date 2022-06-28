@@ -83,7 +83,7 @@ class AdminController extends Controller
             $kode = "Nomor Aset : ".$data->kode_item." | Nama : ".$data->nama_item." | IP : ".$data->network_device->ip." | Lokasi : ".$data->network_device->lokasi_network_device->nama_lokasi." | Tanggal : ".TanggalIndo::tanggal_indo($data->network_device->tanggal);
         }else{
             $data = Item::with('item_keluar')->where('id',$id)->first();
-            $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$data->item_keluar->nip);
+            $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$data->item_keluar->nip);
             $datakaryawan = json_decode($response)[0];
             $kode = "Nomor Aset : ".$data->kode_item." | Spesifikasi : ".$data->deskripsi." | User : ".$datakaryawan->nama." | Jabatan : ".$datakaryawan->jabatan->jabatan." | Departemen : ".$datakaryawan->departemen->departemen." | Tanggal : ".TanggalIndo::tanggal_indo($data->item_keluar->tanggal);
         }

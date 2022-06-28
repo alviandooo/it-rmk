@@ -30,7 +30,7 @@
                                     <input type="hidden" id="id" name="id" value="{{ Request::segment(4)}}">
                                     <div class="form-group">
                                         <label for="">Nomor Request Order : </label>
-                                        <input name="ro_no" type="text" class="form-control" readonly value="{{$data->ro_no}}">
+                                        <input name="ro_no" type="text" class="form-control" id="ro_no" readonly value="{{$data->ro_no}}">
                                     </div>
                                     <div class="form-group mt-2">
                                         <label for="">Nama Perusahaan : </label>
@@ -68,6 +68,9 @@
                             <hr>
                             <div class="row">
                                 <div class="col-md-12">
+                                        <div class="col-md-1">
+                                            <a class="btn btn-success mb-2" href="" target="_blank" id="btn-excel">Excel</a>
+                                        </div>
                                     <div class="border" style="padding :15px; display:block; overflow-x:scroll;">
                                         {{-- <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="btn-tambah">Tambah</a> --}}
                                         <table class="table table-bordered mb-0" style="" id="table-permintaan-aset" style="width: 100%">
@@ -188,6 +191,10 @@
         }
         $(document).ready(function () {
 
+            var nomor_request_order = $('#ro_no').val();
+            var url_excel = "{{url('/admin/permintaan/excel/item')}}"+"/"+nomor_request_order.replace(/\//g, "-");
+            $('#btn-excel').attr("href", url_excel)
+
             var dtpa = $('#table-permintaan-aset').DataTable({});
 
             // var tambahButton = $('#btn-tambah');
@@ -210,6 +217,8 @@
             //     e.preventDefault();
             //     $(this).parent().parent('tr').remove(); //Remove field html
             // });
+
+            
 
             $(tbody).on('click', '.btn-status-process', function(e){
                 e.preventDefault();

@@ -22,7 +22,7 @@ class PenggunaController extends Controller
 
     public function all1()
     {
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
 
         $datamasuk = ItemMasuk::where('nip','!=', null)->get();
@@ -58,7 +58,7 @@ class PenggunaController extends Controller
 
     public function all()
     {
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
 
         $item = Item::with('item_keluar')->where('status_item', '2')->where('kategori_id','!=','4')->get();
@@ -109,7 +109,7 @@ class PenggunaController extends Controller
     public function detail($nip)
     {
         // "ip"/hr-rmk2/public/api/karyawan/{nip}
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$nip);
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$nip);
         $datakaryawan = json_decode($response);
         return view('admin.pengguna.detail',compact(['datakaryawan']));   
     }
@@ -169,7 +169,7 @@ class PenggunaController extends Controller
 
     public function datalaporan()
     {
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
 
         $item = Item::with('item_keluar','kategori')->where('status_item', '2')->where('kategori_id', '!=','4')->get();
@@ -210,7 +210,7 @@ class PenggunaController extends Controller
 
     public function export($jenis_export)
     {
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
 
         $item = Item::with('item_keluar','kategori')->where('status_item', '2')->where('kategori_id', '!=','4')->get();

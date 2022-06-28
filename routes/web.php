@@ -21,6 +21,7 @@ use App\Http\Controllers\StokController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ItemUpgradeController;
 use App\Http\Controllers\SAPItemController;
+use App\Http\Controllers\SiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,9 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/admin/item/sap', [SAPItemController::class, 'index'])->name('sap.index');
     Route::get('/admin/item/sap/{id}', [SAPItemController::class, 'edit'])->name('sap.edit');
     Route::post('/admin/item/sap/store', [SAPItemController::class, 'store'])->name('sap.store');
+
+    // route Site
+    Route::get('/admin/site', [SiteController::class, 'index'])->name('site.index');
     
     //  route item
     Route::get('/admin/item', [ItemController::class, 'index'])->name('item.index');
@@ -91,7 +95,7 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/admin/item/network-device', [ItemController::class, 'networkDevice'])->name('item.nd');
     Route::get('/admin/item/network-device/data', [ItemController::class, 'datanetworkDevice'])->name('item.datand');
     Route::get('/admin/item/consumable', [ItemController::class, 'consumable'])->name('item.consumable');
-    Route::get('/admin/item/consumable/data', [ItemController::class, 'dataconsumable'])->name('item.dataconsumable');
+    Route::get('/admin/item/consumable/data/{status}', [ItemController::class, 'dataconsumable'])->name('item.dataconsumable');
     
     Route::get('/admin/item/all', [ItemController::class, 'getAll'])->name('item.getAll');
     Route::get('/admin/item/{kode_item}', [ItemController::class, 'itembykode'])->name('item.itembykode');
@@ -174,6 +178,7 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/admin/permintaan/edit/{id}', [PermintaanController::class, 'edit'])->name('permintaan.edit');
         Route::get('/admin/permintaan/update/{ro}/{status}', [PermintaanController::class, 'updatestatuspermintaan'])->name('permintaan.updatestatuspermintaan');
         Route::get('/admin/permintaan/pdf/{id}', [PermintaanController::class, 'pdf'])->name('permintaan.pdf');
+        Route::get('/admin/permintaan/excel/item/{ro}', [PermintaanController::class, 'excelItem'])->name('permintaan.excelItem');
         Route::post('/admin/permintaan/update/status-approve', [PermintaanController::class, 'updatestatusapprove'])->name('permintaan.updatestatusapprove');
         Route::post('/admin/permintaan/update', [PermintaanController::class, 'update'])->name('permintaan.update');
         Route::post('/admin/permintaan/store', [PermintaanController::class, 'store'])->name('permintaan.store');
@@ -182,7 +187,6 @@ Route::middleware(['auth'])->group(function (){
         //aprovement
         Route::get('/admin/permintaan/approval', [PermintaanController::class, 'indexApprove'])->name('permintaan.indexapprove');
         Route::get('/admin/permintaan/allapprove', [PermintaanController::class, 'getAllApprove'])->name('permintaan.getAllApprove');
-
 
     // route item permintaan
     Route::get('/admin/item-permintaan/edit/{id}', [ItemPermintaanController::class, 'edit'])->name('itempermintaan.edit');

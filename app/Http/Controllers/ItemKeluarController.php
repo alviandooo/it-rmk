@@ -21,9 +21,9 @@ class ItemKeluarController extends Controller
         //ambil item yg ready untuk diberikan ke karyawan
         $item = Item::where('status_item',1)->get();
         $itemedit = Item::all();
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
-        $response1 = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/departemen/25');
+        $response1 = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/departemen/25');
         $datakaryawanit = json_decode($response1);
         return view('admin.inventaris.keluar.index',compact(['item','datakaryawan','itemedit','datakaryawanit']));
     }
@@ -40,7 +40,7 @@ class ItemKeluarController extends Controller
         }
         ])->orderBy('tanggal', 'desc')->get();
 
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         $result=[];
         $final = array();
@@ -113,7 +113,8 @@ class ItemKeluarController extends Controller
 
             return response()->json(['text'=>'Data berhasil disimpan!', 'status'=>201]);
         } catch (\Throwable $th) {
-            return response()->json(['text'=>'Data tidak berhasil disimpan!', 'status'=>201]);
+            dd($th);
+            return response()->json(['text'=>'Data tidak berhasil disimpan!', 'status'=>422]);
         }
     }
 
@@ -160,11 +161,11 @@ class ItemKeluarController extends Controller
         $tanggalnow = TanggalIndo::tanggal_indo($date->format('Y-m-d'));
         $waktu = $date->format('H:i:s');
 
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$request->nip_it);
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$request->nip_it);
         $datakaryawan = json_decode($response)[0];
         $data = ItemKeluar::with(['item', 'item.kategori'])->find($request->id);
 
-        $penerima = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/'.$data->nip);
+        $penerima = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$data->nip);
         $datapenerima = json_decode($penerima)[0];
 
         $tanggal = TanggalIndo::tanggal_indo($data->tanggal);

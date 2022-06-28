@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $response = Http::get('http://localhost:8282/hr-rmk2/public/api/karyawan/all/data');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         return view('admin.users.index',compact(['datakaryawan']));
     }
