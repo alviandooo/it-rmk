@@ -13,14 +13,15 @@ use Intervention\Image\Facades\Image;
 use DateTime;
 use DateTimeZone;
 use File;
+use Auth;
 
 class ItemKeluarController extends Controller
 {
     public function index()
     {
         //ambil item yg ready untuk diberikan ke karyawan
-        $item = Item::where('status_item',1)->get();
-        $itemedit = Item::all();
+        $item = Item::where('site', Auth::user()->lokasi)->where('status_item',1)->get();
+        $itemedit = Item::where('site', Auth::user()->lokasi)->get();
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         $response1 = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/departemen/25');
@@ -30,15 +31,7 @@ class ItemKeluarController extends Controller
 
     public function all()
     {
-        $itemkeluar = ItemKeluar::with(['item'=>function ($query)
-        {
-            $query->select('*');
-        },
-        'item.kategori'=>function ($query)
-        {
-            $query->select('*');
-        }
-        ])->orderBy('tanggal', 'desc')->get();
+        $itemkeluar = ItemKeluar::with(['item.kategori'])->whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->orderBy('tanggal', 'desc')->get();
 
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);

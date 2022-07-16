@@ -78,7 +78,7 @@
                     {data:'analisa_kerusakan', name:"analisa_kerusakan"},
                     {data:'nama', name:"nama"},
                     {data:'jabatan', name:"jabatan"},
-                    {data:null, render:function(a,b,c,d){
+                    {data:'status', render:function(a,b,c,d){
                         if(c.status == '0'){
                             return '<span class="badge bg-warning" style="color:black">Proses</span>'
                         }else{

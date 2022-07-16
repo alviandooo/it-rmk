@@ -81,6 +81,11 @@ Route::middleware(['auth'])->group(function (){
 
     // route Site
     Route::get('/admin/site', [SiteController::class, 'index'])->name('site.index');
+    Route::get('/admin/site/edit/{id}', [SiteController::class, 'edit'])->name('site.edit');
+    Route::get('/admin/site/getAll', [SiteController::class, 'getAll'])->name('site.getAll');
+    Route::post('/admin/site', [SiteController::class, 'store'])->name('site.store');
+    Route::post('/admin/site/update', [SiteController::class, 'update'])->name('site.update');
+    Route::post('/admin/site/delete', [SiteController::class, 'destroy'])->name('site.delete');
     
     //  route item
     Route::get('/admin/item', [ItemController::class, 'index'])->name('item.index');
@@ -208,7 +213,7 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/admin/inventaris/stok', [StokController::class, 'index'])->name('stok.index');
     Route::get('/admin/inventaris/stok/all', [StokController::class, 'all'])->name('stok.all');
     Route::get('/admin/inventaris/stok/{kategori_id}/detail', [StokController::class, 'detail'])->name('stok.detail');
-    Route::get('/admin/inventaris/stok/{kategori_id}', [StokController::class, 'detailbykategori'])->name('stok.detailbykategori');
+    Route::get('/admin/inventaris/stok/{kategori_id}/{status_item}', [StokController::class, 'detailbykategori'])->name('stok.detailbykategori');
     Route::get('/admin/inventaris/stok/{tgl_awal}/{tgl_akhir}/{jenis_data}', [StokController::class, 'detailbytanggal'])->name('stok.detailbytanggal');
 
     //route stok consumable

@@ -66,9 +66,15 @@ class StokController extends Controller
 
     }
 
-    public function detailbykategori($kategori_id)
+    public function detailbykategori($kategori_id, $status)
     {
-        $data = Item::with(['kategori','satuan'])->where('kategori_id',$kategori_id)->where('status_item',1)->get();
+        if ($status == 1) {
+            $data = Item::with(['kategori','satuan'])->where('status_item', $status)->where('jumlah', '!=', 0)->where('kategori_id',$kategori_id)->where('status_item',1)->get();
+        }else if($status == 2){
+            $data = Item::with(['kategori','satuan'])->where('status_item', '1')->where('jumlah', '=', 0)->where('kategori_id',$kategori_id)->where('status_item',1)->get();
+        }else{
+            $data = Item::with(['kategori','satuan'])->where('kategori_id',$kategori_id)->where('status_item',1)->get();
+        }
         return datatables()->of($data)->make(true);
     }
 

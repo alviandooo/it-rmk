@@ -19,6 +19,7 @@ use App\Models\NetworkDevice;
 use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
+use Auth;
 
 class ItemController extends Controller
 {
@@ -31,7 +32,8 @@ class ItemController extends Controller
 
     public function getAll()
     {
-        $data = Item::with(['kategori','satuan'])->get();
+        
+        $data = Item::where('site', Auth::user()->lokasi)->with(['item_site','kategori','satuan'])->get();
         return datatables()->of($data)->make(true);
     }
 
@@ -233,7 +235,7 @@ class ItemController extends Controller
     public function kodeItem()
     {
         //generate kode item
-        $kode = Item::where('kode_item','!=','-')->orderBy('kode_item', 'desc')->first();
+        $kode = Item::where('site', Auth::user()->lokasi)->where('kode_item','!=','-')->orderBy('kode_item', 'desc')->first();
         if(!$kode){
             $k = 1;
         }else{
@@ -245,13 +247,13 @@ class ItemController extends Controller
     public function itembykode($kode)
     {
         $kode_item = str_replace('-','/',$kode);
-        $data = Item::with(['kategori'])->where('kode_item', $kode_item)->first();
+        $data = Item::with(['kategori'])->where('site', Auth::user()->lokasi)->where('kode_item', $kode_item)->first();
         return response()->json($data);
     }
 
     public function itembyid($id)
     {
-        $data = Item::with(['kategori'])->where('id', $id)->first();
+        $data = Item::with(['kategori'])->where('site', Auth::user()->lokasi)->where('id', $id)->first();
         return response()->json($data);
     }
 
@@ -270,11 +272,12 @@ class ItemController extends Controller
 
     public function store(Request $request)
     {
+      
         //generate kode item
         if ($request->kategori_id == '6') {
-            $no = Item::where('kategori_id','6')->orderBy('created_at', 'desc')->first();
+            $no = Item::where('site', Auth::user()->lokasi)->where('kategori_id','6')->orderBy('created_at', 'desc')->first();
         }else{
-            $no = Item::where('kategori_id','!=','6')->orderBy('created_at', 'desc')->first();
+            $no = Item::where('site', Auth::user()->lokasi)->where('kategori_id','!=','6')->orderBy('created_at', 'desc')->first();
         }
         if(!$no){
             $k = 1;
@@ -283,9 +286,9 @@ class ItemController extends Controller
             $k = (intval($ktemp[0]) +1);
         }
         $jenis = Kategori::find($request->kategori_id)->kode;
-        $kode = $k."/".$jenis."/"."IT"."/".date("Y");
+        $kode = $k."/".$jenis."/"."IT"."/".Auth::user()->site->kode_perusahaan."/".date("Y");
 
-        $cekkode = Item::where('kode_item', $kode)->count();
+        $cekkode = Item::where('site', Auth::user()->lokasi)->where('kode_item', $kode)->count();
         
         if($cekkode != '0'){
             return response()->json(['text'=>'Kode Aset sudah ada!', 'status'=>422]);
@@ -300,15 +303,15 @@ class ItemController extends Controller
 
             if($request->kategori_id == '6'){
                     if ($request->select_jenis_item == '2') {
-                        $item = Item::where('kode_item',$request->kode_item);
+                        $item = Item::where('site', Auth::user()->lokasi)->where('kode_item',$request->kode_item);
                         $item->update(['jumlah' => (($item->first()->jumlah) + ($request->jumlah))]);
                         $kode = $request->kode_item;
                     }else{
-                        Item::create(array_merge($request->except(['_token','tanggal_item','nama_item','serie_item','merk','deskripsi','select_jenis_item']), ['nama_item'=>strtoupper($request->nama_item),'serie_item'=>strtoupper($request->serie_item),'merk'=>strtoupper($request->merk),'deskripsi'=>strtoupper($request->deskripsi),'kode_item'=>$kode, 'tanggal'=>date("Y-m-d", strtotime($request->tanggal_item)) ,'status_fisik'=>1, 'status_item'=>1]));
+                        Item::create(array_merge($request->except(['_token','tanggal_item','nama_item','serie_item','merk','deskripsi','select_jenis_item']), ['site'=>Auth::user()->lokasi,'nama_item'=>strtoupper($request->nama_item),'serie_item'=>strtoupper($request->serie_item),'merk'=>strtoupper($request->merk),'deskripsi'=>strtoupper($request->deskripsi),'kode_item'=>$kode, 'tanggal'=>date("Y-m-d", strtotime($request->tanggal_item)) ,'status_fisik'=>1, 'status_item'=>1]));
                     }
             }else{
                 // table item , status_fisik (kondisi) = 1=baik, 2=rusak, 3=perbaikan
-                Item::create(array_merge($request->except(['_token','tanggal_item','nama_item','serie_item','merk','deskripsi']), ['nama_item'=>strtoupper($request->nama_item),'serie_item'=>strtoupper($request->serie_item),'merk'=>strtoupper($request->merk),'deskripsi'=>strtoupper($request->deskripsi),'kode_item'=>$kode, 'tanggal'=>date("Y-m-d", strtotime($request->tanggal_item)) ,'status_fisik'=>1, 'status_item'=>1,'jumlah'=>1]));
+                Item::create(array_merge($request->except(['_token','tanggal_item','nama_item','serie_item','merk','deskripsi']), ['site'=>Auth::user()->lokasi,'nama_item'=>strtoupper($request->nama_item),'serie_item'=>strtoupper($request->serie_item),'merk'=>strtoupper($request->merk),'deskripsi'=>strtoupper($request->deskripsi),'kode_item'=>$kode, 'tanggal'=>date("Y-m-d", strtotime($request->tanggal_item)) ,'status_fisik'=>1, 'status_item'=>1,'jumlah'=>1]));
             }
 
             $jumlah = 0;
@@ -382,7 +385,7 @@ class ItemController extends Controller
 
     public function datalaptop()
     {
-        $data = Item::with(['kategori','satuan'])->where('kategori_id',1)->orderBy('created_at', 'desc')->get();
+        $data = Item::with(['item_site','kategori','satuan'])->where('site', Auth::user()->lokasi)->where('kategori_id',1)->orderBy('created_at', 'desc')->get();
         return datatables()->of($data)->make(true);
     }
 
@@ -395,7 +398,7 @@ class ItemController extends Controller
 
     public function dataprinter()
     {
-        $data = Item::with(['kategori','satuan'])->where('kategori_id',2)->orderBy('created_at', 'desc')->get();
+        $data = Item::with(['item_site','kategori','satuan'])->where('site', Auth::user()->lokasi)->where('kategori_id',2)->orderBy('created_at', 'desc')->get();
         return datatables()->of($data)->make(true);
     }
     
@@ -408,7 +411,7 @@ class ItemController extends Controller
 
     public function datapc()
     {
-        $data = Item::with(['kategori','satuan'])->where('kategori_id',3)->orderBy('created_at', 'desc')->get();
+        $data = Item::with(['item_site','kategori','satuan'])->where('site', Auth::user()->lokasi)->where('kategori_id',3)->orderBy('created_at', 'desc')->get();
         return datatables()->of($data)->make(true);
     }
 
@@ -421,7 +424,7 @@ class ItemController extends Controller
 
     public function datanetworkDevice()
     {
-        $data = Item::with(['kategori','satuan'])->where('kategori_id',4)->orderBy('created_at', 'desc')->get();
+        $data = Item::with(['item_site','kategori','satuan'])->where('site', Auth::user()->lokasi)->where('kategori_id',4)->orderBy('created_at', 'desc')->get();
         return datatables()->of($data)->make(true);
     }
 
@@ -434,7 +437,7 @@ class ItemController extends Controller
 
     public function dataperipheral()
     {
-        $data = Item::with(['kategori','satuan'])->where('kategori_id',5)->orderBy('created_at', 'desc')->get();
+        $data = Item::with(['item_site','kategori','satuan'])->where('site', Auth::user()->lokasi)->where('kategori_id',5)->orderBy('created_at', 'desc')->get();
         return datatables()->of($data)->make(true);
     }
 
@@ -442,18 +445,18 @@ class ItemController extends Controller
     {
         $satuan = Satuan::all();
         $kategori = Kategori::all();
-        $itemconsumable = Item::where('kategori_id','6')->get();
+        $itemconsumable = Item::where('site', Auth::user()->lokasi)->where('kategori_id','6')->get();
         return view('admin.item.consumable.index', compact(['satuan','kategori','itemconsumable']));
     }
 
     public function dataconsumable($status)
     {
         if($status == 1){
-            $data = Item::with(['kategori','satuan'])->where('kategori_id',6)->where('status_item', 1)->where('jumlah', '!=', 0)->orderBy('created_at', 'desc')->get();
+            $data = Item::with(['item_site','kategori','satuan'])->where('site', Auth::user()->lokasi)->where('kategori_id',6)->where('status_item', 1)->where('jumlah', '!=', 0)->orderBy('created_at', 'desc')->get();
         }else if($status == 2){
-            $data = Item::with(['kategori','satuan'])->where('kategori_id',6)->where('status_item', 1)->where('jumlah', '=', 0)->orderBy('created_at', 'desc')->get();
+            $data = Item::with(['item_site','kategori','satuan'])->where('site', Auth::user()->lokasi)->where('kategori_id',6)->where('status_item', 1)->where('jumlah', '=', 0)->orderBy('created_at', 'desc')->get();
         }else{
-            $data = Item::with(['kategori','satuan'])->where('kategori_id',6)->orderBy('created_at', 'desc')->get();
+            $data = Item::with(['item_site','kategori','satuan'])->where('site', Auth::user()->lokasi)->where('kategori_id',6)->orderBy('created_at', 'desc')->get();
         }
         return datatables()->of($data)->make(true);
     }
@@ -461,7 +464,7 @@ class ItemController extends Controller
     // function export data item kategori
     public function exportnd($jenis_export)
     {
-        $data = Item::with(['kategori','network_device','network_device.lokasi_network_device','network_device.lokasi_network_device.area_lokasi_network_device'])->where('kategori_id', '4')->get();
+        $data = Item::with(['kategori','network_device','network_device.lokasi_network_device','network_device.lokasi_network_device.area_lokasi_network_device'])->where('site', Auth::user()->lokasi)->where('kategori_id', '4')->get();
         // $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         // $datakaryawan = json_decode($response)->data;
         $final = array();
@@ -507,7 +510,7 @@ class ItemController extends Controller
 
     public function exportitembykategori($kategori_id, $jenis_export)
     {
-        $data = Item::with(['kategori'])->where('kategori_id', $kategori_id)->get();
+        $data = Item::with(['kategori'])->where('site', Auth::user()->lokasi)->where('kategori_id', $kategori_id)->get();
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         $final = array();

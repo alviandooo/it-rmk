@@ -9,6 +9,7 @@ use App\Models\ItemService;
 use App\Models\Kerusakan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Auth;
 
 class ItemPerbaikanController extends Controller
 {
@@ -16,20 +17,13 @@ class ItemPerbaikanController extends Controller
     {
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
-        $item = Item::whereIn('status_fisik', ['1','2','3'])->get();
+        $item = Item::where('site', Auth::user()->lokasi)->whereIn('status_fisik', ['1','2','3'])->get();
         return view('admin.inventaris.perbaikan.index', compact(['item','datakaryawan']));
     }
 
     public function getAll()
     {
-        $itemperbaikan = ItemPerbaikan::with(['item' => function ($query)
-        {
-            $query->select('*');
-        },
-        'item.kategori'=>function ($query)
-        {
-            $query->select('*');
-        }])->orderBy('tanggal_perbaikan', 'desc')->get();
+        $itemperbaikan = ItemPerbaikan::with(['item.kategori'])->whereRelation('item', 'site', Auth::user()->lokasi)->orderBy('tanggal_perbaikan', 'desc')->get();
 
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         
@@ -108,7 +102,7 @@ class ItemPerbaikanController extends Controller
                     ItemPerbaikan::insert($array_ip);
     
                 //ubah status item kerusakan menjadi baik di table item
-                Item::where('kode_item', $kerusakan->kode_item)->update(['status_fisik'=>'1']);
+                Item::where('site', Auth::user()->lokasi)->where('kode_item', $kerusakan->kode_item)->update(['status_fisik'=>'1']);
     
                 //ubah status kerusakan menjadi 1 = selesai
                 $kerusakan->update(['status'=>'1']);
@@ -165,11 +159,11 @@ class ItemPerbaikanController extends Controller
                 //kurangi jumlah stok sesuai dengan item terpakai di stok consumable
                     foreach ($dataitemservice as $key => $value) {
                         $jumlah = intval($value->stok) - intval($value->jumlah);
-                        Item::where('kode_item', $value->kode_item)->update(['jumlah'=>$jumlah]);
+                        Item::where('site', Auth::user()->lokasi)->where('kode_item', $value->kode_item)->update(['jumlah'=>$jumlah]);
                     }
     
                 //ubah status item kerusakan menjadi baik di table item
-                Item::where('kode_item', $kerusakan->kode_item)->update(['status_fisik'=>'1']);
+                Item::where('site', Auth::user()->lokasi)->where('kode_item', $kerusakan->kode_item)->update(['status_fisik'=>'1']);
     
                 //ubah status kerusakan menjadi 1 = selesai
                 $kerusakan->update(['status'=>'1']);
