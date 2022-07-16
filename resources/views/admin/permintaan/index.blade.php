@@ -71,7 +71,7 @@
                     }},
                     {data:'ro_no', data:'ro_no'},
                     {data:'lokasi_kerja', name:"lokasi_kerja"},
-                    {data:'status_permintaan', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if(c.status_permintaan == '0'){
                             return '<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">'+
                                                                     '<span class="badge bg-warning" style="color:black">PROCESS</span></a>'+
@@ -101,7 +101,7 @@
                                                                     '<li class=""><a class="dropdown-item btn-status-complete" href="#">COMPLETE</a></li></ul>'
                         }
                     }},
-                    {data:'status_approval', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if(c.status_approval != "-"){
                             return '<span class="badge bg-secondary">waiting</span>';
                         }else{

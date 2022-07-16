@@ -20,7 +20,6 @@ class UserSeeder extends Seeder
             'email'=>'superadmin@rmkenergy.com',
             'role'=>'0',
             'status_aktif'=>'1',
-            'lokasi'=>'1',
             'password'=>bcrypt('secret'),
         ]);
     }

@@ -44,7 +44,6 @@
                                     <td>Merk</td>
                                     <td>Status</td>
                                     <td>Kondisi</td>
-                                    <td>Site</td>
                                     <td>Created_at</td>
                                     <td>Actions</td>
                                 </tr>
@@ -75,7 +74,7 @@
                 },
                 "processing": true,
                 "serverSide": true,
-                "order": [[ 9, "desc" ]],
+                "order": [[ 8, "desc" ]],
                 "ajax": "{{route('item.getAll')}}",
                 "columns": [
                     {data:'id', name:"id", visible:false},
@@ -84,7 +83,7 @@
                     {data:'nama_item', name:"nama_item"},
                     {data:'serie_item', name:"serie_item"},
                     {data:'merk', name:"merk"},
-                    {data:'jumlah', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if (c.jumlah == '0') {
                             return '<span style="background-color:#FFC107; padding: 5px; border-radius:5px;">Kosong</span>';
                         }else{
@@ -95,7 +94,7 @@
                             }
                         }
                     }},
-                    {data:'status_fisik', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if(c.kategori_id == '6'){
                             return '-';
                         }else{
@@ -107,9 +106,6 @@
                                 return '<span style="background-color:#DC3545; padding: 5px; border-radius:5px;">Rusak</span>';
                             }
                         }
-                    }},
-                    {data:null, render:function(a,b,c,d){
-                        return c.item_site.lokasi_perusahaan
                     }},
                     {data:'created_at', name:"created_at"},
                     {data:null, render:function(a,b,c,d){
@@ -137,7 +133,7 @@
                 }else if(val == 5){
                     dti.ajax.url( "{{route('item.dataperipheral')}}" ).load();
                 }else if(val == 6){
-                    dti.ajax.url( "{{route('item.dataconsumable',0)}}" ).load();
+                    dti.ajax.url( "{{route('item.dataconsumable')}}" ).load();
                 }
 
                 $('#dtitem').DataTable().ajax.reload();

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Site;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -14,24 +13,16 @@ class UserController extends Controller
     {
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
-
-        if(Auth::user()->nip == '88888888'){
-            $site = Site::all();
-        }else{
-            $site = Site::where('id',Auth::user()->lokasi);
-        }
-
-        return view('admin.users.index',compact(['datakaryawan','site']));
+        return view('admin.users.index',compact(['datakaryawan']));
     }
 
     public function all()
     {
         if (Auth::user()->nip == '88888888') {
-            $data = User::with(['site'])->get();
+            $data = User::all();
         }else{
-            $data = User::with(['site'])->where('nip',Auth::user()->nip)->get();
+            $data = User::where('nip',Auth::user()->nip)->get();
         }
-
         return datatables()->of($data)->make(true);
     }
 
@@ -44,21 +35,16 @@ class UserController extends Controller
     {
         try {
             if($request->password == null){
-                $data = User::find($request->id)->update([
+                User::find($request->id)->update([
                     'name'=> $request->nama,
                     'status_aktif'=> $request->status_aktif,
                     'email'=> $request->email,
-                    'lokasi'=> $request->lokasi,
-                    'role'=> $request->role,
                 ]);    
-
             }else{
                 User::find($request->id)->update([
                     'status_aktif'=> $request->status_aktif,
                     'email'=> $request->email,
-                    'lokasi'=> $request->lokasi,
                     'name'=> $request->nama,
-                    'role'=> $request->role,
                     'password'=>bcrypt($request->password),
                 ]);
             }
@@ -74,12 +60,10 @@ class UserController extends Controller
     {
         try {
             // User::create(array_merge($request->except(['_token']), ['role'=>'1']));
-            // dd($request->all());
             User::create([
                 'nip'=>$request->nip,
                 'role'=>'1',
                 'name'=>$request->name,
-                'lokasi'=>$request->site,
                 'email'=> $request->email,
                 'password'=>bcrypt($request->password),
             ]);

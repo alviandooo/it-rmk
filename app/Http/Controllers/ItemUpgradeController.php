@@ -6,21 +6,20 @@ use App\Models\Item;
 use App\Models\ItemUpgrade;
 use Illuminate\Http\Request;
 use Nette\Utils\Json;
-use Auth;
 
 class ItemUpgradeController extends Controller
 {
 
     public function getAll()
     {
-        $data = ItemUpgrade::with(['item','item.kategori','item_part'])->whereRelation('item', 'site', Auth::user()->lokasi)->get();
+        $data = ItemUpgrade::with(['item','item.kategori','item_part'])->get();
         return datatables()->of($data)->make(true);
     }
 
     public function getByKodeItem($id)
     {
         $kode_item = Item::find($id)->kode_item;
-        $data = ItemUpgrade::with(['item','item.kategori','item_part'])->whereRelation('item', 'site', Auth::user()->lokasi)->where('kode_item', $kode_item)->get();
+        $data = ItemUpgrade::with(['item','item.kategori','item_part'])->where('kode_item', $kode_item)->get();
         return datatables()->of($data)->make(true);
     }
 

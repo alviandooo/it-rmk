@@ -14,18 +14,17 @@ use App\Helpers\TanggalIndo;
 use DateTime;
 use DateTimeZone;
 use Intervention\Image\Facades\Image;
-use Auth;
 
 class ItemMasukController extends Controller
 {
     public function index()
     {
         // ambil item yg ready
-        $item = Item::where('site', Auth::user()->lokasi)->get();
+        $item = Item::all();
         $itemconsumable = Item::where('kategori_id','6')->get();
         // $item = Item::where('status_item',2)->get();
-        $item1 = Item::where('site', Auth::user()->lokasi)->where('status_item',1)->get();
-        $itemedit = Item::where('site', Auth::user()->lokasi)->where('site', Auth::user()->lokasi)->get();
+        $item1 = Item::where('status_item',1)->get();
+        $itemedit = Item::all();
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         $response1 = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/departemen/25');
@@ -35,7 +34,7 @@ class ItemMasukController extends Controller
 
     public function getAll()
     {
-        $data = ItemMasuk::with(['kategori','satuan','item'])->whereRelation('item', 'site', Auth::user()->lokasi)->get();
+        $data = ItemMasuk::with(['kategori','satuan'])->get();
         return datatables()->of($data)->make(true);
     }
 
@@ -49,17 +48,15 @@ class ItemMasukController extends Controller
 
     public function all()
     {
-        // $itemmasuk = ItemMasuk::with(['item'=>function ($query)
-        // {
-        //     $query->select('*');
-        // },
-        // 'item.kategori'=>function ($query)
-        // {
-        //     $query->select('*');
-        // }
-        // ])->where('type','2')->orderBy('tanggal', 'desc')->get();
-
-        $itemmasuk = ItemMasuk::with(['item.kategori'])->whereRelation('item','site',Auth::user()->lokasi)->where('type','2')->orderBy('tanggal', 'desc')->get();
+        $itemmasuk = ItemMasuk::with(['item'=>function ($query)
+        {
+            $query->select('*');
+        },
+        'item.kategori'=>function ($query)
+        {
+            $query->select('*');
+        }
+        ])->where('type','2')->orderBy('tanggal', 'desc')->get();
 
         // $client = new \GuzzleHttp\Client();
         // $response = $client->request('GET', 'http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');

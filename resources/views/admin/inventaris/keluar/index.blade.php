@@ -77,7 +77,7 @@
                         var thn = (tahun < 1000) ? tahun + 1900 : tahun;
                         return tgl+" "+bln+" "+thn;
                     }},
-                    {data:'kode_item', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         return c.kode_item;
                         // kode = c.kode_item;
                         // var url = "{{url ('/admin/item/riwayat-aset/')}}" + "/" + kode.split('/').join('-');
@@ -93,7 +93,7 @@
                     {data:'nama_item', name:"nama_item"},
                     {data:'serie_item', name:"serie_item"},
                     {data:'kategori', name:"kategori"},
-                    {data:'status_item', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if (c.kategori == 'CONSUMABLE') {
                             return '-'
                         }else{

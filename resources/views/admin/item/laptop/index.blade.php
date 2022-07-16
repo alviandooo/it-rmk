@@ -70,14 +70,14 @@
                     {data:'nama_item', name:"nama_item"},
                     {data:'serie_item', name:"serie_item"},
                     {data:'merk', name:"merk"},
-                    {data:'status_item', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if (c.status_item == "1") {
                             return '<span style="background-color:#15CA20; padding: 5px; border-radius:5px;">Ready</span>';
                         }else{
                             return '<span style="background-color:#DC3545; padding: 5px; border-radius:5px;">N/A</span>';
                         }
                     }},
-                    {data:'status_fisik', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if (c.status_fisik == "1") {
                             return '<span style="background-color:#15CA20; padding: 5px; border-radius:5px;">Baik</span>';
                         }else if(c.status_fisik == "3"){

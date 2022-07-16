@@ -79,7 +79,7 @@
                     {data:'nama_item', name:"nama_item"},
                     {data:'serie_item', name:"serie_item"},
                     {data:'merk', name:"merk"},
-                    {data:'jumlah', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if (c.jumlah == '0') {
                             return '<span style="background-color:#FFC107; padding: 5px; border-radius:5px;">Kosong</span>';
                         }else{
@@ -90,7 +90,7 @@
                             }
                         }
                     }},
-                    {data:'status_fisik', render:function(a,b,c,d){
+                    {data:null, render:function(a,b,c,d){
                         if (c.status_fisik == "1") {
                             return '<span style="background-color:#15CA20; padding: 5px; border-radius:5px;">Baik</span>';
                         }else if(c.status_fisik == "3"){

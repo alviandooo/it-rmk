@@ -13,13 +13,13 @@
         </div>
 
         @if (Auth::user()->nip == '88888888')
-            <div class="row col-md-8">
+            <div class="row col-md-6">
                 <div class="card">
                     <div class="card-body" >
                         <div class="">
                             <div class="form-inline">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">NIP :</label>
                                             <select name="" id="nip" class="form-control" style="width:100%">
@@ -33,7 +33,7 @@
                                             <input type="text" class="form-control form-control-sm" id="nama">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Email :</label>
                                             <input type="text" class="form-control form-control-sm" id="email">
@@ -42,17 +42,6 @@
                                             <label for="">Password :</label>
                                             <input type="password" class="form-control form-control-sm" id="password">
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="">Site :</label>
-                                            <select name="" id="site" class="form-control single-select" style="width:100%">
-                                                @foreach ($site as $s)
-                                                    <option value="{{$s->id}}">{{$s->kode_perusahaan}} - {{$s->nama_perusahaan}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
                                     </div>
                                 </div>
                                 <button class="btn btn-sm btn-primary mt-2" style="float:right" id="btn-tambah-user">Tambah</button>
@@ -75,7 +64,6 @@
                                     <td>Nama</td>
                                     <td>Email</td>
                                     <td>Role</td>
-                                    <td>Site</td>
                                     <td>Status</td>
                                     <td>Actions</td>
                                 </tr>
@@ -110,22 +98,13 @@
                     {data:'nip', name:"nip"},
                     {data:'name', name:"name"},
                     {data:'email', name:"email"},
-                    {data:'role', render:function(a,b,c,d){
-                        if(c.role == 0){
-                            return 'Super Admin'
-                        }else if(c.role == 1){
-                            return 'Admin'
-                        }
-                    }},
+                    {data:'role', name:"role"},
                     {data:null, render:function(a,b,c,d){
                         if(c.status_aktif == '1'){
                             return 'Aktif'
                         }else{
                             return 'Nonaktif'
                         }
-                    }},
-                    {data:'lokasi', render:function(a,b,c,d){
-                        return c.site.nama_perusahaan + " - " + c.site.lokasi_perusahaan
                     }},
                     {data:null, render:function(a,b,c,d){
                         if({{Auth::user()->role}}  == '0'){
@@ -153,7 +132,6 @@
                 data.append('name', $('#nama').val());
                 data.append('email', $('#email').val());
                 data.append('nip', $('#nip').val());
-                data.append('site', $('#site').val());
                 data.append('password', $('#password').val());
 
                 $.ajax({
@@ -192,9 +170,7 @@
                         $('#modal-edit-user').modal('show');
                         $('#nama-edit').val(response.name);
                         $('#email-edit').val(response.email);
-                        $('#site-edit').val(response.lokasi).change();
                         $('#id-edit').val(response.id);
-                        $('#role-edit').val(response.role).change();
                         $('#status_aktif-edit').val(response.status_aktif).change();
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -204,45 +180,33 @@
             });
 
             $('#btn-ubah-user').click(function () {
-                if ($('#nama-edit').val() == '') {
-                    swal.fire('Gagal!',"Nama tidak boleh kosong!", "warning");
-                }else if($('#email-edit').val() == ''){
-                    swal.fire('Gagal!',"Email tidak boleh kosong!", "warning");
-                }else{
-                    
-                    var data = new FormData();
-                    data.append('_token',"{{ csrf_token() }}");
-                    data.append('id', $('#id-edit').val());
-                    data.append('status_aktif', $('#status_aktif-edit').val());
-                    data.append('nama', $('#nama-edit').val());
-                    data.append('password', $('#password-edit').val());
-                    data.append('email', $('#email-edit').val());
-                    data.append('lokasi', $('#site-edit').val());
-                    data.append('role', $('#role-edit').val());
-    
-                    $.ajax({
-                        method: "POST",
-                        url: "{{route('user.update')}}",
-                        processData: false,
-                        contentType: false,
-                        data: data,
-                        success: function(response) {
-                            if(response.status == 200){
-                                $('#modal-edit-user').modal('hide');
-                                // $('#dtuser').DataTable().ajax.reload();
-                                swal.fire('Berhasil!',response.text, "success");
-                                var url = "{{route('user.index')}}";
-                                window.location = url;
-                            }else{
-                                swal.fire('Gagal!',response.text, "error");
-                            }
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                                
-                        }
-                    });
+                var data = new FormData();
+                data.append('_token',"{{ csrf_token() }}");
+                data.append('id', $('#id-edit').val());
+                data.append('status_aktif', $('#status_aktif-edit').val());
+                data.append('nama', $('#nama-edit').val());
+                data.append('password', $('#password-edit').val());
+                data.append('email', $('#email-edit').val());
 
-                }
+                $.ajax({
+                    method: "POST",
+                    url: "{{route('user.update')}}",
+                    processData: false,
+                    contentType: false,
+                    data: data,
+                    success: function(response) {
+                        if(response.status == 200){
+                            $('#modal-edit-user').modal('hide');
+                            $('#dtuser').DataTable().ajax.reload();
+                            swal.fire('Berhasil!',response.text, "success");
+                        }else{
+                            swal.fire('Gagal!',response.text, "error");
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                            
+                    }
+                });
             });
 
             $('#dtuser tbody').on('click','#btn-hapus-user', function () {

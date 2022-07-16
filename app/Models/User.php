@@ -22,7 +22,6 @@ class User extends Authenticatable
         'nip',
         'role',
         'email',
-        'lokasi',
         'status_aktif',
         'password',
     ];
@@ -45,9 +44,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function site()
-    {
-        return $this->belongsTo(Site::class, 'lokasi','id');
-    }
 }

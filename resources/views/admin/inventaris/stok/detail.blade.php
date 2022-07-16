@@ -24,13 +24,6 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <div class="col-md-2 mb-3">
-                            <select name="" class="single-select" id="status-item">
-                                <option value="0">Semua</option>
-                                <option value="1">Ready</option>
-                                <option value="2">Kosong</option>
-                            </select>
-                        </div>
                         <table id="dtstok" class="table table-stripped table-hover" style="background-color: #fff; border-radius:5px; width:100%">
                             <thead>
                                 <tr>
@@ -70,7 +63,7 @@
                 "processing": true,
                 "serverSide": true,
                 // "order": [[ 7, "desc" ]],
-                "ajax": "{{route('stok.detailbykategori', [Request::segment(4), 0])}}",
+                "ajax": "{{route('stok.detailbykategori', Request::segment(4))}}",
                 "columns": [
                     {data:'id', name:"id", visible:false},
                     {data:'kode_item', name:"kode_item"},
@@ -104,11 +97,6 @@
                     }},
                 ]
             });  
-
-            $('#status-item').change(function () {
-                var url = "{{url('/admin/inventaris/stok')}}"+"/"+"{{Request::segment(4)}}"+"/"+this.value
-                dti.ajax.url(url).load();
-            })
 
         });
     </script>

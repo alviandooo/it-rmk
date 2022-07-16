@@ -55,9 +55,4 @@ class Item extends Model
     {
         return $this->belongsTo(ItemUpgrade::class, 'kode_item_upgrade', 'kode_item');
     }
-
-    public function item_site()
-    {
-        return $this->belongsTo(Site::class, 'site','id');
-    }
 }
