@@ -13,7 +13,11 @@ class BackupController extends Controller
 
     public function backup()
     {
-        \Artisan::call('backup:run');
-        return response()->json(['text'=>'Data berhasil dibackup!', 'status'=>200]);
+        try {
+            \Artisan::call('backup:run');
+            return response()->json(['text'=>'Data berhasil dibackup!', 'status'=>200]);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
 }

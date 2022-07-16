@@ -9,14 +9,15 @@ use App\Models\Kerusakan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use PDF;
+use Auth;
 
 
 class KerusakanController extends Controller
 {
     public function index()
     {
-        $item = Item::all();
-        $sparepart = Item::whereIn('kategori_id',['6'])->where('jumlah','!=','0')->get();
+        $item = Item::where('site', Auth::user()->lokasi)->get();
+        $sparepart = Item::where('site', Auth::user()->lokasi)->whereIn('kategori_id',['6'])->where('jumlah','!=','0')->get();
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
         $datakaryawan = json_decode($response);
         return view('admin.inventaris.kerusakan.index',compact(['item','datakaryawan','sparepart']));
@@ -24,15 +25,7 @@ class KerusakanController extends Controller
 
     public function all()
     {
-        $data = Kerusakan::with(['item'=>function ($query)
-        {
-            $query->select('*');
-        },
-        'item.kategori'=>function ($query)
-        {
-            $query->select('*');
-        }
-        ])->orderBy('tanggal', 'desc')->get();
+        $data = Kerusakan::whereRelation('item','site', Auth::user()->lokasi)->with(['item.kategori'])->orderBy('tanggal', 'desc')->get();
 
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
 
@@ -71,13 +64,13 @@ class KerusakanController extends Controller
     {
         if ($nip == '11111111') {
             
-            $itemnd = Item::where('kategori_id', '4')->get()->toArray();
+            $itemnd = Item::where('site', Auth::user()->lokasi)->where('kategori_id', '4')->get()->toArray();
 
-            $itemkembali = ItemMasuk::where('nip',$nip)->get();
+            $itemkembali = ItemMasuk::whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->where('nip',$nip)->get();
             $kodenotin = array();
             foreach ($itemkembali as $key => $value) {
-                $countkeluar = ItemKeluar::where('kode_item',$value->kode_item)->where('nip',$nip)->count();
-                $countmasuk = ItemMasuk::where('kode_item',$value->kode_item)->where('nip',$nip)->count();
+                $countkeluar = ItemKeluar::whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->where('kode_item',$value->kode_item)->where('nip',$nip)->count();
+                $countmasuk = ItemMasuk::whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->where('kode_item',$value->kode_item)->where('nip',$nip)->count();
     
                 if($countkeluar == $countmasuk){
                     array_push($kodenotin, $value->kode_item);
@@ -85,19 +78,19 @@ class KerusakanController extends Controller
             }
     
             if($nip == '-'){
-                $item1 = Item::with(['item_keluar'])->where('status_item', '2')->where('kategori_id','!=','4')->get()->toArray();
+                $item1 = Item::whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->with(['item_keluar'])->where('status_item', '2')->where('kategori_id','!=','4')->get()->toArray();
             }else{
-                $item1 = Item::with(['item_keluar'])->whereRelation('item_keluar', 'nip', $nip)->where('status_item', '2')->where('kategori_id','!=','4')->whereNotIn('kode_item', $kodenotin)->get()->toArray();
+                $item1 = Item::whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->with(['item_keluar'])->whereRelation('item_keluar', 'nip', $nip)->where('status_item', '2')->where('kategori_id','!=','4')->whereNotIn('kode_item', $kodenotin)->get()->toArray();
             }
 
             $item = array_merge($itemnd, $item1);
 
         }else{
-            $itemkembali = ItemMasuk::where('nip',$nip)->get();
+            $itemkembali = ItemMasuk::whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->where('nip',$nip)->get();
             $kodenotin = array();
             foreach ($itemkembali as $key => $value) {
-                $countkeluar = ItemKeluar::where('kode_item',$value->kode_item)->where('nip',$nip)->count();
-                $countmasuk = ItemMasuk::where('kode_item',$value->kode_item)->where('nip',$nip)->count();
+                $countkeluar = ItemKeluar::whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->where('kode_item',$value->kode_item)->where('nip',$nip)->count();
+                $countmasuk = ItemMasuk::whereRelation('item.item_site', 'site' ,Auth::user()->lokasi)->where('kode_item',$value->kode_item)->where('nip',$nip)->count();
     
                 if($countkeluar == $countmasuk){
                     array_push($kodenotin, $value->kode_item);
@@ -105,9 +98,9 @@ class KerusakanController extends Controller
             }
     
             if($nip == '-'){
-                $item = Item::with(['item_keluar'])->where('status_item', '2')->where('kategori_id','!=','4')->get();
+                $item = Item::with(['item_keluar'])->where('site' ,Auth::user()->lokasi)->where('status_item', '2')->where('kategori_id','!=','4')->get();
             }else{
-                $item = Item::with(['item_keluar'])->whereRelation('item_keluar', 'nip', $nip)->where('status_item', '2')->where('kategori_id','!=','4')->whereNotIn('kode_item', $kodenotin)->get();
+                $item = Item::with(['item_keluar'])->whereRelation('item_keluar', 'nip', $nip)->where('status_item', '2')->where('site' ,Auth::user()->lokasi)->where('status_item', '2')->where('kategori_id','!=','4')->whereNotIn('kode_item', $kodenotin)->get();
             }
         }
         
@@ -153,19 +146,7 @@ class KerusakanController extends Controller
 
     public function pdf($id)
     {
-        $data = Kerusakan::with(['item'=>function ($query)
-        {
-            $query->select('*');
-        },
-        'item.kategori'=>function ($query)
-        {
-            $query->select('*');
-        },
-        'item.item_keluar'=>function ($query)
-        {
-            $query->select('*');
-        }
-        ])->where('id',$id)->get();
+        $data = Kerusakan::with(['item','item.kategori','item.item_keluar'])->whereRelation('item','site' ,Auth::user()->lokasi)->where('status_item', '2')->where('id',$id)->get();
 
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
 

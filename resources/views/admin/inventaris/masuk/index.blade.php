@@ -262,35 +262,41 @@
             $('#btn-simpan-itemmasuk').click(function () {
                 var tgl = new Date($('#tanggal').val()).toLocaleDateString("ID").replace(/\//g, "-");
 
-                var data = new FormData();
-                data.append('_token',"{{ csrf_token() }}");
-                data.append('kode_item', $('#kode_item').val());
-                data.append('tanggal', tgl);
-                data.append('nip', $('#nip2lengkap').val());
-                data.append('status_item', $('#kondisi').val());
-                data.append('deskripsi', $('#deskripsi').val());
+                if($('#nip2lengkap').val() == ""){
+                    swal.fire('Gagal!', "Nama tidak boleh kosong!", "error");
+                }else{
 
-                $.ajax({
-                    method: "POST",
-                    url: "{{route('itemmasuk.store')}}",
-                    processData: false,
-                    contentType: false,
-                    data: data,
-                    success: function(response) {
-                        if(response.status == 201){
-                            // $('#dtjabatan').DataTable().ajax.reload();
-                            swal.fire('Berhasil!',response.text, "success");
-                            var url = "{{route('itemmasuk.index')}}";
-                            window.location = url;
-
-                        }else{
-                            swal.fire('Gagal!',response.text, "error");
+                    var data = new FormData();
+                    data.append('_token',"{{ csrf_token() }}");
+                    data.append('kode_item', $('#kode_item').val());
+                    data.append('tanggal', tgl);
+                    data.append('nip', $('#nip2lengkap').val());
+                    data.append('status_item', $('#kondisi').val());
+                    data.append('deskripsi', $('#deskripsi').val());
+    
+                    $.ajax({
+                        method: "POST",
+                        url: "{{route('itemmasuk.store')}}",
+                        processData: false,
+                        contentType: false,
+                        data: data,
+                        success: function(response) {
+                            if(response.status == 201){
+                                // $('#dtjabatan').DataTable().ajax.reload();
+                                swal.fire('Berhasil!',response.text, "success");
+                                var url = "{{route('itemmasuk.index')}}";
+                                window.location = url;
+    
+                            }else{
+                                swal.fire('Gagal!',response.text, "error");
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                                
                         }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                            
-                    }
-                });
+                    });
+                }
+
             });
 
             $('#btn-simpan-itemmasuk-consumable').click(function () {

@@ -20,6 +20,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
+                        
                         <table id="dtstok" class="table table-stripped table-hover" style="background-color: #fff; border-radius:5px; width:100%">
                             <thead>
                                 <tr>

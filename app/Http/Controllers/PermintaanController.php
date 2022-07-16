@@ -206,7 +206,7 @@ class PermintaanController extends Controller
 
             Permintaan::where('ro_no',$request->ro)->update([
                 'status_approval' => intval($dokumen->status_approval) + 1,
-                'status_permintaan' => $status_permintaan,
+                // 'status_permintaan' => $status_permintaan,
             ]);
             
             return response()->json(['text'=>'Data berhasil diapprove!', 'status'=>200]);
