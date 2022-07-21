@@ -146,10 +146,10 @@ class PenggunaController extends Controller
         $perbaikan = ItemPerbaikan::with('item')->where('nip',$nip)->get();
         $data = array();
         foreach ($kerusakan as $key => $kr) {
-            array_push($data, ['kode_item'=>$kr->kode_item, 'merk'=>$kr->item->merk, 'serie_item'=>$kr->item->serie_item,'tanggal'=>$kr->tanggal, 'jenis'=>'KERUSAKAN', 'deskripsi'=>$kr->item->deskripsi, 'nama'=>$kr->item->nama_item]);
+            array_push($data, ['kode_item'=>$kr->kode_item, 'merk'=>$kr->item->merk, 'serie_item'=>$kr->item->serie_item,'tanggal'=>$kr->tanggal, 'jenis'=>'KERUSAKAN', 'deskripsi'=>$kr->item->deskripsi, 'analisa_kerusakan'=>$kr->analisa_kerusakan, 'nama'=>$kr->item->nama_item]);
         }
         foreach ($perbaikan as $key => $p) {
-            array_push($data, ['kode_item'=>$p->kode_item, 'merk'=>$p->item->merk, 'serie_item'=>$p->item->serie_item,'tanggal'=>$p->tanggal_perbaikan, 'jenis'=>'PERBAIKAN/UPGRADE', 'deskripsi'=>$p->item->deskripsi, 'nama'=>$p->item->nama_item]);
+            array_push($data, ['kode_item'=>$p->kode_item, 'merk'=>$p->item->merk, 'serie_item'=>$p->item->serie_item,'tanggal'=>$p->tanggal_perbaikan, 'jenis'=>'PERBAIKAN/UPGRADE', 'deskripsi'=>$p->item->deskripsi, 'analisa_kerusakan'=>'-', 'nama'=>$p->item->nama_item]);
         }
         return datatables()->of($data)->make(true);
     }

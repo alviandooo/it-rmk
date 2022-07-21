@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <div class="row col-md-12">
+        <div class="row">
             <div class="card">
                 <div class="card-body">
                     <div class="">
@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <div class="row col-md-12">
+        <div class="row">
             <div class="card">
                 <div class="card-body">
                     <h4 style="text-align: center">Data Device</h4>
@@ -78,7 +78,7 @@
             </div>
         </div>
 
-        <div class="row col-md-12">
+        <div class="row">
             <div class="card">
                 <div class="card-body">
                     <h4 style="text-align: center">Data Services</h4>
@@ -91,6 +91,7 @@
                                     <td>Merk</td>
                                     <td>Serie</td>
                                     <td>Spesifikasi</td>
+                                    <td>Analisa Kerusakan</td>
                                     <td>Status</td>
                                 </tr>
                             </thead>
@@ -102,7 +103,7 @@
             </div>
         </div>
 
-        <div class="row col-md-12">
+        <div class="row">
             <div class="card">
                 <div class="card-body">
                     <h4 style="text-align: center">Data Item Consumable</h4>
@@ -171,6 +172,7 @@
                     {data:'merk', name:"merk"},
                     {data:'serie_item', name:"serie_item"},
                     {data:'deskripsi', name:"deskripsi"},
+                    {data:'analisa_kerusakan', name:"analisa_kerusakan"},
                     {data:null, render:function(a,b,c,d){
                         if(c.jenis == 'KERUSAKAN'){
                             return '<span class="badge bg-danger">KERUSAKAN</span>'
@@ -196,7 +198,6 @@
                     {data:'merk', name:"merk"},
                     {data:'jumlah', name:"jumlah"},
                     {data:'kode_item_perbaikan', name:"kode_item_perbaikan"},
-
                 ]
             });  
 
