@@ -45,6 +45,7 @@
 </div>
 @include('admin.permintaan.form.export')
 @include('admin.permintaan.form.sign')
+@include('admin.permintaan.form.pdf')
 @endsection
 
 @section('script')
@@ -120,13 +121,40 @@
                             var urlpdf = "{{url('/admin/permintaan/pdf')}}"+"/"+c.id;
 
                             if ({{Auth::user()->role}} == '0') {
-                                return '<a href="'+url+'"class="btn btn-sm btn-warning">Detail</a><a target="_blank" href="'+urlpdf+'" class="btn btn-sm btn-danger" style="margin-left:5px;">PDF</a><a id="btn-hapus-permintaan" href="#" class="btn btn-sm btn-danger" style="margin-left:5px;">Delete</a>'
+                                return '<a href="'+url+'"class="btn btn-sm btn-warning">Detail</a><a class="btn btn-sm btn-success btn-show-pdf" style="margin-left:5px;">Show</a><a id="btn-hapus-permintaan" href="#" class="btn btn-sm btn-danger" style="margin-left:5px;">Delete</a>'
                             }else{
-                                return '<a href="'+url+'"class="btn btn-sm btn-warning">Detail</a><a target="_blank" href="'+urlpdf+'" class="btn btn-sm btn-danger" style="margin-left:5px;">PDF</a>'
+                                return '<a href="'+url+'"class="btn btn-sm btn-warning">Detail</a><a class="btn btn-sm btn-success btn-show-pdf" style="margin-left:5px;">Show</a>'
                             }
                     }},
                 ]
             }); 
+
+            $('#dtpermintaan tbody').on('click', '.btn-show-pdf', function () {
+                var id = dtp.row($(this).parents('tr')).data().id;
+                var url = "{{url('/admin/permintaan/getById')}}" + "/" + id;
+                $.ajax({
+                    method: "GET",
+                    url: url,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.pdf != '-') {
+                            var pdf = "{{asset('assets/pdf/permintaan')}}"+"/"+response.pdf
+                            $('#frame-pdf').css('display','block');
+                            $('#pdf-none').css('display','none');
+                            $('#frame-pdf').attr('src', pdf);
+                            $('#modal-show-pdf').modal('show');
+                        }else{
+                            $('#frame-pdf').css('display','none');
+                            $('#pdf-none').css('display','block');
+                            $('#modal-show-pdf').modal('show');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                            
+                    }
+                });
+            })
 
             $('#dtpermintaan tbody').on('click', '#btn-approve', function(e){
                 e.preventDefault();
@@ -150,7 +178,6 @@
                             contentType: false,
                             data: data,
                             success: function(response) {
-                                console.log(response);
                                 if(response.status == 200){
                                     $('#dtpermintaan').DataTable().ajax.reload();
                                     swal.fire('Berhasil!',response.text, "success");
@@ -290,12 +317,6 @@
                 dropdownParent: $("#modal-export-permintaan"),
                 placeholder: 'NIP Karyawan',
             });
-
-            // $('#dtpermintaan tbody').on('click','#btn-pdf', function () {
-            //     var id = dtp.row($(this).parents('tr')).data().id;
-            //     $('#modal-export-permintaan').modal('show');
-            //     $('#id-pdf').val(id);
-            // });
 
             $('#dtpermintaan tbody').on('click','#btn-sign', function () {
                 var id = dtp.row($(this).parents('tr')).data().id;

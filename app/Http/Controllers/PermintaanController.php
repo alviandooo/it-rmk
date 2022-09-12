@@ -17,6 +17,7 @@ use Auth;
 use App\Helpers\TanggalIndo;
 use App\Models\Item;
 use PDF;
+use Illuminate\Support\Facades\File; 
 
 class PermintaanController extends Controller
 {
@@ -40,6 +41,17 @@ class PermintaanController extends Controller
         return datatables()->of($data)->make(true);
     }
 
+    public function getById($id)
+    {
+        try {
+            $data = Permintaan::find($id);
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json($th);
+        }
+    }
+
     public function getAllApprove()
     {
         $data = Permintaan::with(['approval'=>function ($q)
@@ -50,7 +62,8 @@ class PermintaanController extends Controller
         return datatables()->of($data)->make(true);
     }
 
-    public function getJumlahBelumApprove(){
+    public function getJumlahBelumApprove()
+    {
         $data = Permintaan::with(['approval'=>function ($q)
         {
             $q->selectRaw('*')->where('nip', Auth::user()->nip)->get();
@@ -176,7 +189,16 @@ class PermintaanController extends Controller
     public function update(Request $request)
     {
         try {
-            Permintaan::find($request->id)->update(array_merge($request->except(['table-permintaan-aset_length','_token','id','tanggal','tanggal_butuh']), ['tanggal'=>date("Y-m-d", strtotime($request->tanggal)), 'tanggal_butuh'=>date("Y-m-d", strtotime($request->tanggal_butuh))]));
+            $data = Permintaan::find($request->id);
+            $data->update(array_merge($request->except(['table-permintaan-aset_length','_token','id','tanggal','tanggal_butuh']), ['tanggal'=>date("Y-m-d", strtotime($request->tanggal)), 'tanggal_butuh'=>date("Y-m-d", strtotime($request->tanggal_butuh))]));
+            if($data->status_approval != '1'){
+                //hapus pdf jika sebelumnya ada
+                $path = "assets/pdf/permintaan"."/".$data->pdf;
+                File::delete($path);
+
+                //save pdf baru
+                $this->generatePDF($data->id);
+            }
             return back()->with(['status'=>'Data berhasil diubah!','code'=>201]);
         } catch (\Throwable $th) {
             //throw $th;
@@ -208,6 +230,20 @@ class PermintaanController extends Controller
                 'status_approval' => intval($dokumen->status_approval) + 1,
                 // 'status_permintaan' => $status_permintaan,
             ]);
+
+            // update pdf
+                if ($dokumen->pdf != '-') {
+                    //hapus pdf jika sebelumnya ada
+                    $path = "assets/pdf/permintaan"."/".$dokumen->pdf;
+                    File::delete($path);
+
+                    //save pdf baru
+                    $this->generatePDF($dokumen->id);
+                }else{
+                    // save pdf
+                    $this->generatePDF($dokumen->id);
+                }
+
             
             return response()->json(['text'=>'Data berhasil diapprove!', 'status'=>200]);
         } catch (\Throwable $th) {
@@ -220,9 +256,9 @@ class PermintaanController extends Controller
     public function updatestatuspermintaan($ro, $status)
     {
         try {
-            Permintaan::where('ro_no', str_replace('-', '/',$ro))->update(['status_permintaan'=>$status]);
+            Permintaan::where('ro_no', str_replace('-', '/',$ro))->get();
             ItemPermintaan::where('ro_no', str_replace('-', '/',$ro))->update(['status_item_permintaan'=>$status]);
-            return response()->json(['text'=>'Item berhasil diubah!', 'status'=>200]);
+            return response()->json(['text'=>'Permintaan Telah Selesai!', 'status'=>200]);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json(['text'=>'Item gagal diubah!', 'status'=>422]);
@@ -260,6 +296,39 @@ class PermintaanController extends Controller
 
         $pdf = PDF::loadView('admin.permintaan.export.pdf', compact(['data','item_permintaan','approve']))->setPaper('a4', 'potrait')->setWarnings(false);
         return $pdf->stream();
+    }
+
+    public function generatePDF($id)
+    {
+        $data = Permintaan::with(['approval'])->find($id);
+        $item_permintaan = ItemPermintaan::with(['satuan'])->where('ro_no',$data->ro_no)->get();
+        $no_dokumen = $data->ro_no;
+
+        $approve = array();
+
+        foreach ($data->approval as $key => $value) {
+            $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/'.$value->nip);
+            $dk = json_decode($response)[0];
+            
+            $image = QrCode::format('png')
+            ->merge('assets/images/LOGO-RMKE.jpg', .3, true)
+            ->size(1000)->errorCorrection('H')
+            ->generate("PT RMK ENERGY TBK \n DEPARTEMEN IT \n No. Dokumen : ".$no_dokumen."\n Signed by : ".$dk->nama." - ".$dk->nip." - ".$dk->jabatan->jabatan."\n Date : ".TanggalIndo::tanggal_indo(date("Y-m-d", strtotime($value->waktu_approve))));
+            $qrcode = base64_encode($image);
+            
+            array_push($approve, ['nip'=>$dk->nip, 'nama'=>$dk->nama, 'jabatan'=>$dk->jabatan->jabatan, 'qrcode'=>$qrcode]);
+        }
+
+        $pdf = PDF::loadView('admin.permintaan.export.pdf', compact(['data','item_permintaan','approve']))->setPaper('a4', 'potrait')->setWarnings(false);
+        
+        $fileName = $data->id ."_". date('dmYHis') .".pdf";
+        $path = "assets/pdf/permintaan"."/".$fileName;
+        $pdf->save($path);
+
+        $data->update([
+            'pdf'=>$fileName
+        ]);
+
     }
 
     public function laporanpdf(Request $request)
@@ -343,9 +412,12 @@ class PermintaanController extends Controller
             // table approval
                 Approval::where('dokumen_id',$id)->where('jenis_dokumen','PERMINTAAN')->delete();
             // table item permintaan
-                ItemPermintaan::where('ro_no', $ro)->delete();
+                ItemPermintaan::where('ro_no', $ro->ro_no)->delete();
             //table permintaan
-                Permintaan::find($id)->delete();
+                $data = Permintaan::find($id);
+                $path = "assets/pdf/permintaan"."/".$data->pdf;
+                File::delete($path);
+                $data->delete();
 
                 return response()->json(['text'=>'Data berhasil dihapus!', 'status'=>200]);
         } catch (\Throwable $th) {

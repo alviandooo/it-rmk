@@ -176,7 +176,7 @@ class ItemController extends Controller
         $item = ItemKeluar::with(['item','item_service','item_service.item_perbaikan'])->whereRelation('item','kategori_id','6')->whereRelation('item_service.item_perbaikan','kode_item',$kode_item)->get();
         $data = array();
         foreach ($item as $key => $i) {
-            array_push($data, ['kode_item'=>$i->kode_item, 'merk'=>$i->item->merk,  'nip'=>$i->nip, 'nama'=>$i->item->nama_item, 'jumlah'=>$i->item_service[0]->jumlah, 'kode_item_perbaikan'=>$i->item_service[0]->item_perbaikan->kode_item]);
+            array_push($data, ['kode_item'=>$i->kode_item, 'tanggal'=>$i->tanggal, 'merk'=>$i->item->merk,  'nip'=>$i->nip, 'nama'=>$i->item->nama_item, 'jumlah'=>$i->item_service[0]->jumlah, 'kode_item_perbaikan'=>$i->item_service[0]->item_perbaikan->kode_item]);
         }
 
         $temp = [];
@@ -184,6 +184,7 @@ class ItemController extends Controller
 
         foreach ($data as $key => $v) {
             $temp['kode_item'] = $v['kode_item'];
+            $temp['tanggal'] = $v['tanggal'];
             $temp['nama'] = $v['nama'];
             $temp['merk'] = $v['merk'];
             $temp['jumlah'] = $v['jumlah'];

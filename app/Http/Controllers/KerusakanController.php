@@ -146,7 +146,7 @@ class KerusakanController extends Controller
 
     public function pdf($id)
     {
-        $data = Kerusakan::with(['item','item.kategori','item.item_keluar'])->whereRelation('item','site' ,Auth::user()->lokasi)->where('status_item', '2')->where('id',$id)->get();
+        $data = Kerusakan::with(['item','item.kategori','item.item_keluar'])->whereRelation('item','site' ,Auth::user()->lokasi)->whereRelation('item','status_item', '2')->where('id',$id)->get();
 
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
 

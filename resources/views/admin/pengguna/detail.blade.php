@@ -86,6 +86,7 @@
                         <table id="dtpenggunaservice" class="table table-stripped table-hover" style="background-color: #fff; border-radius:5px; width:100%">
                             <thead>
                                 <tr>
+                                    <td>Tanggal</td>
                                     <td>No Aset</td>
                                     <td>Nama</td>
                                     <td>Merk</td>
@@ -111,6 +112,7 @@
                         <table id="dtpenggunaitemservice" class="table table-stripped table-hover" style="background-color: #fff; border-radius:5px; width:100%">
                             <thead>
                                 <tr>
+                                    <td>Tanggal</td>
                                     <td>No Aset</td>
                                     <td>Nama</td>
                                     <td>Merk</td>
@@ -167,6 +169,7 @@
                 "pageLength" : 5,
                 "ajax": "{{route('pengguna.getRiwayatPenggunaService', Request::segment(3))}}",
                 "columns": [
+                    {data:'tanggal', name:"tanggal"},
                     {data:'kode_item', name:"kode_item"},
                     {data:'nama', name:"nama"},
                     {data:'merk', name:"merk"},
@@ -193,6 +196,7 @@
                 "pageLength" : 5,
                 "ajax": "{{route('pengguna.getRiwayatPenggunaItemService', Request::segment(3))}}",
                 "columns": [
+                    {data:'tanggal', name:"tanggal"},
                     {data:'kode_item', name:"kode_item"},
                     {data:'nama', name:"nama"},
                     {data:'merk', name:"merk"},

@@ -37,7 +37,6 @@ class ItemPermintaanController extends Controller
             $jumlahdataipprocess = ItemPermintaan::where('ro_no', $ro)->where('status_item_permintaan', '0')->count();
             $jumlahdataipcomplete = ItemPermintaan::where('ro_no', $ro)->where('status_item_permintaan', '1')->count();
             $jumlahdataippending = $dataip->where('status_item_permintaan', '2')->count();
-            
             // status permintaan -> 0-process, 1-complete, 3-incomplete, 2-pending
             if($jumlahdataip == $jumlahdataipcomplete){
                 $status = '1';

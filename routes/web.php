@@ -181,6 +181,7 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/admin/permintaan/jumlah-belum-approve', [PermintaanController::class, 'getJumlahBelumApprove'])->name('permintaan.getJumlahBelumApprove');
         Route::get('/admin/permintaan/tambah', [PermintaanController::class, 'create'])->name('permintaan.tambah');
         Route::get('/admin/permintaan/edit/{id}', [PermintaanController::class, 'edit'])->name('permintaan.edit');
+        Route::get('/admin/permintaan/getById/{id}', [PermintaanController::class, 'getById'])->name('permintaan.getById');
         Route::get('/admin/permintaan/update/{ro}/{status}', [PermintaanController::class, 'updatestatuspermintaan'])->name('permintaan.updatestatuspermintaan');
         Route::get('/admin/permintaan/pdf/{id}', [PermintaanController::class, 'pdf'])->name('permintaan.pdf');
         Route::get('/admin/permintaan/excel/item/{ro}', [PermintaanController::class, 'excelItem'])->name('permintaan.excelItem');

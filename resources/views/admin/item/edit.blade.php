@@ -184,6 +184,7 @@
                         <table id="dtriwayatitemservice" class="table table-stripped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
+                                    <td>Tanggal</td>
                                     <th>No Aset</th>
                                     <th>Item</th>
                                     <th>Merk</th>
@@ -302,6 +303,7 @@
                 "order": [[ 1, "asc" ]],
                 "ajax": "{{route('item.getRiwayatItemService', Request::segment(4))}}",
                 "columns": [
+                    {data:'tanggal', name:"tanggal"},
                     {data:'kode_item', name:"kode_item"},
                     {data:'nama', name:"nama"},
                     {data:'merk', name:"merk"},

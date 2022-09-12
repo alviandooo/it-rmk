@@ -160,7 +160,7 @@ class PenggunaController extends Controller
         $item = ItemKeluar::with(['item','item_service','item_service.item_perbaikan'])->whereRelation('item','kategori_id','6')->where('nip',$nip)->get();
         $data = array();
         foreach ($item as $key => $i) {
-            array_push($data, ['kode_item'=>$i->kode_item, 'merk'=>$i->item->merk, 'nama'=>$i->item->nama_item, 'jumlah'=>( isset($i->item_service[0]->jumlah) ? $i->item_service[0]->jumlah : '1'), 'kode_item_perbaikan'=>isset($i->item_service[0]->item_perbaikan->kode_item) ? $i->item_service[0]->item_perbaikan->kode_item : '-']);
+            array_push($data, ['kode_item'=>$i->kode_item, 'tanggal'=>$i->tanggal, 'merk'=>$i->item->merk, 'nama'=>$i->item->nama_item, 'jumlah'=>( isset($i->item_service[0]->jumlah) ? $i->item_service[0]->jumlah : '1'), 'kode_item_perbaikan'=>isset($i->item_service[0]->item_perbaikan->kode_item) ? $i->item_service[0]->item_perbaikan->kode_item : '-']);
         }
         
         return datatables()->of($data)->make(true);

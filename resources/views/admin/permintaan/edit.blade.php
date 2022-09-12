@@ -23,7 +23,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-body">
-                        <form action="{{route('permintaan.update')}}" method="POST">
+                        <form action="{{route('permintaan.update')}}" method="POST" id="form-update-permintaan">
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-md-4">
@@ -165,7 +165,7 @@
                                     </ul>
                                 </div>
                                 <div class="col form-group">
-                                    <button style="float: right" type="submit" class="btn btn-primary">Simpan</button>
+                                    <button style="float: right" id="btn-update-permintaan" type="button" class="btn btn-primary">Simpan</button>
                                 </div>
                             </div>
                             
@@ -367,7 +367,31 @@
                 }) 
             })
 
+            $('#btn-update-permintaan').click(function () {
+                Swal.fire({
+                    title: 'Mohon Tunggu!',
+                    html: 'Data sedang diubah...',
+                    // timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
+
+                $('#form-update-permintaan').submit();
+            })
+
             $('#btn-ubah-item-permintaan').click(function () {
+                Swal.fire({
+                    title: 'Mohon Tunggu!',
+                    html: 'Data sedang diubah...',
+                    // timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
+
                 var data = new FormData();
                 data.append('_token',"{{ csrf_token() }}");
                 data.append('id', $('#id-edit').val());
