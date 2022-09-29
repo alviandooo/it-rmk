@@ -17,7 +17,9 @@ class PenggunaController extends Controller
 {
     public function index()
     {
-        return view('admin.pengguna.index');
+        $response = Http::get('http://localhost:8082/hr-rmk2/public/api/departemen/all');
+        $datadepartemen = json_decode($response);
+        return view('admin.pengguna.index', compact(['datadepartemen']));
     }
 
     public function all1()
@@ -56,38 +58,58 @@ class PenggunaController extends Controller
         return datatables()->of($final)->make(true);
     }
 
-    public function all()
+    public function all($departemen_id)
     {
+        
         $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/all/data');
+        //     $response = Http::get('http://localhost:8082/hr-rmk2/public/api/karyawan/departemen/'.$departemen_id);
+
         $datakaryawan = json_decode($response);
 
         $item = Item::with('item_keluar')->where('status_item', '2')->where('kategori_id','!=','4')->get();
         $result=[];
         $final = array();
+        $finaltemp = array();
         $nip_temp ="";
         foreach ($item as $key => $value) {
+            $nip_temp ="";
+            //data item
             $nip_temp = $value->item_keluar->nip;
             foreach ($datakaryawan as $key1 => $dk) {
+                //data karyawan
                 if($dk->nip == $nip_temp){
                     $result['nama'] = $dk->nama;
                     $result['nip'] = $dk->nip;
                     $result['departemen'] = $dk->departemen->departemen;
+                    $result['departemen_id'] = $dk->departemen->id;
                     $result['jabatan'] = $dk->jabatan->jabatan;
                     $result['kode_item'] = $value->kode_item;
                     $result['nama_item'] = $value->nama_item;
                     $result['serie_item'] = $value->serie_item;
                     $result['merk'] = $value->merk;
                     // $result['type'] = $dk->nip." - ".$dk->nama." - ".$dk->jabatan->jabatan;
-                    break;
                 }
+
+            }
+            
+            if ($result != []) {
+                array_push($finaltemp, $result);
             }
 
-            array_push($final, $result);
+            // array_push($final, $result);
+        }
 
+        if ($departemen_id != 0) {
+            foreach ($finaltemp as $keytemp => $valuetemp) {
+                if($valuetemp['departemen_id'] == $departemen_id){
+                    array_push($final, $valuetemp);
+                }
+            }
+        }else{
+            $final = $finaltemp;
         }
 
         $datagroup = collect($final)->groupBy(['nama']);
-
         $temp = [];
         $dtfinal = array();
         $nip_temp = "";

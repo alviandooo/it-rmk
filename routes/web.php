@@ -159,7 +159,7 @@ Route::middleware(['auth'])->group(function (){
 
     // route pengguna
     Route::get('/admin/pengguna/', [PenggunaController::class, 'index'])->name('pengguna.index');
-    Route::get('/admin/pengguna/all', [PenggunaController::class, 'all'])->name('pengguna.all');
+    Route::get('/admin/pengguna/all/{departemen_id}', [PenggunaController::class, 'all'])->name('pengguna.all');
     Route::get('/admin/pengguna/all1', [PenggunaController::class, 'all1'])->name('pengguna.all1');
     Route::get('/admin/pengguna/{nip}/detail', [PenggunaController::class, 'detail'])->name('pengguna.detail');
     Route::get('/admin/pengguna/{nip}/detail/riwayat-pengguna', [PenggunaController::class, 'riwayatPengguna'])->name('pengguna.riwayat');
