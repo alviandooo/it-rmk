@@ -186,4 +186,29 @@ class KerusakanController extends Controller
         $pdf = PDF::loadView('admin.inventaris.kerusakan.export.pdf', compact(['final']))->setPaper('a4', 'potrait')->setWarnings(false);
         return $pdf->stream();
     }
+
+    public function rusak(Request $request)
+    {
+
+        try {
+            // 1. ubah status menjadi tidak bisa diperbaiki di table kerusakan
+            $kerusakan = Kerusakan::find($request->id);
+    
+            $kerusakan->update([
+                'status' => "2"
+            ]);
+    
+            // 2. ubah status item menjadi rusak di table item
+            $item = Item::where('kode_item', $kerusakan->kode_item)->first();
+            $item->update([
+                'status_fisik' => '4'
+            ]);
+
+            return response()->json(['text'=>'Kerusakan berhasil diselesaikan!','status'=>200]);
+
+            
+        } catch (\Throwable $th) {
+            return response()->json(['text'=>'Data gagal diubah!','status'=>422]);
+        }
+    }
 }

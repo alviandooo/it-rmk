@@ -28,6 +28,9 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="col-md-9" style="margin-top:7px; text-align:right">
+                                <button style="" class="btn btn-sm btn-success" id="btn-export">Export</button>
+                            </div>
                         </div>
                         <br>
                         <table id="dtnd" class="table table-stripped table-hover" style="background-color: #fff; border-radius:5px; width:100%">
@@ -60,6 +63,7 @@
     </div>
 </div>
 @include('admin.network_device.form.form-edit')
+@include('admin.network_device.form.form-export')
 @endsection
 @section('script')
     <script>
@@ -117,6 +121,13 @@
                     }},
                 ]
             });
+
+            $('#btn-export').click(function () {
+                var area_id = "{{Request::segment(3)}}"
+                $('#id_area_nd').val(area_id);
+                $('#modal-export').modal('show');
+
+            })
 
             $('#select_lokasi').change(function () {
                 if(this.value == '-'){

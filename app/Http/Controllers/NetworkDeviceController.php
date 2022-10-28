@@ -2,14 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\NDAreaExport;
 use App\Models\AreaLokasiNetworkDevice;
 use App\Models\Item;
 use App\Models\LokasiNetworkDevice;
 use App\Models\NetworkDevice;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use PDF;
 
 class NetworkDeviceController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->exportPDF = "1";
+        $this->exportExcel = "2";
+    }
+
     public function index()
     {
         $area = AreaLokasiNetworkDevice::all();
@@ -142,6 +152,26 @@ class NetworkDeviceController extends Controller
             //throw $th;
             return response()->json(['text'=>'Data gagal ditambahkan!', 'status'=>422]);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $data = [];
+        $nd = NetworkDevice::with(['lokasi_network_device.area_lokasi_network_device', 'item'])->whereRelation('lokasi_network_device.area_lokasi_network_device', 'id', $request->id_area_nd);
+        if($request->nama_device){
+            $nd->whereRelation('item', 'nama_item', 'LIKE', '%'.$request->nama_device.'%');
+        }
+        $data["data"] = $nd->get();
+        $data["area"] = AreaLokasiNetworkDevice::find($request->id_area_nd);
+
+        if ($request->jenis_export == $this->exportPDF) {
+            $pdf = PDF::loadView('admin.network_device.export.pdf', compact(['data']))->setPaper('a4', 'potrait')->setWarnings(false);
+            return $pdf->stream();
+        }else{
+            return Excel::download(new NDAreaExport($data), 'NetworkDeviceArea.xlsx');
+        }
+
+
     }
 
 }

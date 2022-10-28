@@ -262,7 +262,7 @@
             $('#btn-simpan-itemmasuk').click(function () {
                 var tgl = new Date($('#tanggal').val()).toLocaleDateString("ID").replace(/\//g, "-");
 
-                if($('#nip2lengkap').val() == ""){
+                if($('#nip').val() == ""){
                     swal.fire('Gagal!', "Nama tidak boleh kosong!", "error");
                 }else{
 
@@ -270,7 +270,7 @@
                     data.append('_token',"{{ csrf_token() }}");
                     data.append('kode_item', $('#kode_item').val());
                     data.append('tanggal', tgl);
-                    data.append('nip', $('#nip2lengkap').val());
+                    data.append('nip', $('#nip').val());
                     data.append('status_item', $('#kondisi').val());
                     data.append('deskripsi', $('#deskripsi').val());
     

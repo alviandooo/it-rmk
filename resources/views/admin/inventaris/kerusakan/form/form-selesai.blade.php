@@ -20,6 +20,7 @@
                         <a href="javascript:void(0);" style="width:100%" class="btn btn-primary" id="btn-tambah-sp">Tambah Item</a>
                     </div>
                 </div>
+
                 <table class="table-bordered table mt-3" style="border-color: black" id="table-item-servis" style="width: 100%">
                     <thead>
                         <tr>
@@ -40,8 +41,9 @@
             </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary btn-sm" id="btn-selesai-kerusakan">Selesai</button>
+            <button type="button" class="btn btn-danger btn-sm" id="btn-rusak-kerusakan">Tidak Bisa Diperbaiki</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-selesai-kerusakan">Selesai</button>
         </div>
       </div>
     </div>

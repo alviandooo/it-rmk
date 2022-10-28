@@ -204,9 +204,9 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/admin/inventaris/kerusakan', [KerusakanController::class, 'index'])->name('kerusakan.index');
     Route::get('/admin/inventaris/kerusakan/all', [KerusakanController::class, 'all'])->name('kerusakan.all');
     Route::get('/admin/inventaris/kerusakan/{nip}/item', [KerusakanController::class, 'select2item'])->name('kerusakan.select2item');
-
     Route::get('/admin/inventaris/kerusakan/edit/{id}', [KerusakanController::class, 'edit'])->name('kerusakan.edit');
     Route::get('/admin/inventaris/kerusakan/pdf/{id}', [KerusakanController::class, 'pdf'])->name('kerusakan.pdf');
+    Route::post('/admin/inventaris/kerusakan/rusak', [KerusakanController::class, 'rusak'])->name('kerusakan.rusak');
     Route::post('/admin/inventaris/kerusakan/store', [KerusakanController::class, 'store'])->name('kerusakan.store');
     Route::post('/admin/inventaris/kerusakan/update', [KerusakanController::class, 'update'])->name('kerusakan.update');
 
@@ -230,6 +230,7 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/admin/network-device/{area_id}/detail-area/data', [NetworkDeviceController::class, 'detaildatabyarea'])->name('networkdevice.detaildatabyarea');
     Route::get('/admin/network-device/{area_id}/{lokasi_id}/detail-area/data', [NetworkDeviceController::class, 'detaildatabylokasiarea'])->name('networkdevice.detaildatabylokasiarea');
     
+    Route::post('/admin/network-device/area/export', [NetworkDeviceController::class, 'export'])->name('networkdevice.exportareabyname');
     Route::post('/admin/network-device/update', [NetworkDeviceController::class, 'update'])->name('networkdevice.update');
     Route::post('/admin/network-device/store', [NetworkDeviceController::class, 'store'])->name('networkdevice.store');
 
@@ -248,6 +249,7 @@ Route::middleware(['auth'])->group(function (){
         Route::post('/admin/area-lokasi/update/lokasi', [AreaLokasiController::class, 'updatelokasi'])->name('arealokasi.updatelokasi');
         Route::post('/admin/area-lokasi/store/lokasi', [AreaLokasiController::class, 'storelokasi'])->name('arealokasi.storelokasi');
         Route::post('/admin/area-lokasi/delete/lokasi', [AreaLokasiController::class, 'destroylokasi'])->name('arealokasi.deletelokasi');
+
 
     // route backup
     Route::get('/admin/backup', [BackupController::class, 'index'])->name('backup.index');

@@ -81,8 +81,10 @@
                     {data:'status', render:function(a,b,c,d){
                         if(c.status == '0'){
                             return '<span class="badge bg-warning" style="color:black">Proses</span>'
-                        }else{
+                        }else if (c.status == '1'){
                             return '<span class="badge bg-success" style="color:black">Selesai</span>'
+                        }else if (c.status == '2'){
+                            return '<span class="badge bg-danger" style="color:black">Tidak bisa diperbaiki</span>'
                         }
                     }},
                     {data:null, render:function(a,b,c,d){
@@ -122,7 +124,7 @@
             $('#nip').change(function name(params) {
                 // setting option item sesuai nik pengguna
                 var nik = this.value
-                var url = "{{url('/admin/inventaris/kerusakan')}}" +"/"+nik+"/item";
+                var url = "{{url('/admin/inventaris/kerusakan')}}"+"/"+nik+"/item";
                 $.ajax({
                     method: "GET",
                     url: url,
@@ -139,6 +141,49 @@
                     }
                 });
 
+            })
+
+            $('#btn-rusak-kerusakan').click(function () {
+                swal.fire({
+                    title: "Selesai?",
+                    icon: 'warning',
+                    text: "Anda yakin item tidak bisa diperbaiki?",
+                    type: "warning",
+                    showCancelButton: !0,
+                    confirmButtonText: "Ya",
+                    cancelButtonText: "Batal",
+                }).then(function (e) {
+                    if(e.value == true){
+                        var id = $('#kode_item_kerusakan').val();
+
+                        var data = new FormData();
+                        data.append('_token',"{{ csrf_token() }}");
+                        data.append('id', id);
+                        
+                        $.ajax({
+                            method: "POST",
+                            url: "{{route('kerusakan.rusak')}}",
+                            processData: false,
+                            contentType: false,
+                            data: data,
+                            success: function(response) {
+                                if(response.status == 200){
+                                    swal.fire('Berhasil!',response.text, "success");
+                                    var url = "{{route('kerusakan.index')}}";
+                                    window.location = url;
+                                }else{
+                                    swal.fire('Gagal!',response.text, "error");
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                    
+                            }
+                        });
+                    }else{
+
+                    }
+
+                }) 
             })
 
             $('#btn-tambah-kerusakan').click(function () {
@@ -327,15 +372,12 @@
                     });
                 }
 
-                
-
             });
         });
 
         $(document).ready(function () {
 
             $('#btn-tambah-sp').click(function () {
-
                 // var no = 0;
                 //             var tbody1 = $('#table-item-servis tbody');
                 //             var fieldHTML1 = '<tr><td><input type="text" name="nip_approver[]" class="form-control" readonly value="-"></td>'+
